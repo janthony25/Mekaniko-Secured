@@ -1,0 +1,17 @@
+﻿@model Mekaniko_Secured.Models.Dto.LoginDto
+
+<h2>Login</h2>
+
+<form asp-controller="Login" asp-action="Index" method="post">
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit">Login</button>
+</form>
