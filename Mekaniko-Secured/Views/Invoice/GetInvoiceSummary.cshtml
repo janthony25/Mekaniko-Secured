@@ -1,0 +1,35 @@
+﻿@model List<Mekaniko_Secured.Models.Dto.InvoiceListDto>
+
+<h2>Invoices</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Invoice ID</th>
+            <th>Customer</th>
+            <th>Car Rego</th>
+            <th>Amount Due</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var invoice in Model)
+        {
+            <tr>
+                <td>@invoice.DateAdded</td>
+                <td>@invoice.InvoiceId</td>
+                <td>@invoice.CustomerName</td>
+                <td>@invoice.CarRego</td>
+                <td>@invoice.DueDate</td>
+                <td>@invoice.TotalAmount</td>
+                <td>@invoice.IsPaid</td>
+                <td>
+                    <a>Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
