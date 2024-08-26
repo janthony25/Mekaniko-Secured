@@ -169,6 +169,7 @@ function submitInvoice() {
         InvoiceItems: []
     };
 
+    // Add invoice items if they exist
     $('.invoice-item').each(function () {
         invoiceData.InvoiceItems.push({
             ItemName: $(this).find('input[name$=".ItemName"]').val(),
@@ -181,7 +182,7 @@ function submitInvoice() {
     console.log('Submitting invoice data:', invoiceData);
 
     $.ajax({
-        url: addInvoiceUrl, // Use the URL variable defined in the view
+        url: addInvoiceUrl,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(invoiceData),
@@ -235,6 +236,7 @@ function fetchInvoiceDetails(invoiceId) {
 
 // Function to populate the view modal with invoice details
 function populateViewModal(invoice) {
+    $('#ViewInvoiceId').val(invoice.invoiceId);  // Ensure
     $('#ViewCustomerName').val(invoice.customerName);
     $('#ViewCarRego').val(invoice.carRego);
     $('#ViewDateAdded').val(invoice.dateAdded);
@@ -289,3 +291,27 @@ function clearInvoiceForm() {
     console.log('Invoice form cleared');
     populateCustomerDetails(); // Re-populate customer details after clearing
 }
+
+// Event listener for viewing PDF
+$(document).on('click', '#viewPdfBtn', function () {
+    var invoiceId = $('#ViewInvoiceId').val();
+    if (invoiceId) {
+        var viewUrl = '/Invoice/GeneratePdf?id=' + invoiceId;
+        window.open(viewUrl, '_blank');
+    } else {
+        console.error('Invoice ID not found');
+        alert('Unable to view PDF: Invoice ID not found');
+    }
+});
+
+// Event listener for downloading PDF
+$(document).on('click', '#generatePdfBtn', function () {
+    var invoiceId = $('#ViewInvoiceId').val();
+    if (invoiceId) {
+        var downloadUrl = '/Invoice/GeneratePdf?id=' + invoiceId + '&download=true';
+        window.location.href = downloadUrl;
+    } else {
+        console.error('Invoice ID not found');
+        alert('Unable to download PDF: Invoice ID not found');
+    }
+});

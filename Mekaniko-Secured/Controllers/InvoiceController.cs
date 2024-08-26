@@ -1,17 +1,21 @@
 ﻿using Mekaniko_Secured.Models.Dto;
 using Mekaniko_Secured.Repository.IRepository;
+using Mekaniko_Secured.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MigraDoc.Rendering;
 
 namespace Mekaniko_Secured.Controllers
 {
     public class InvoiceController : Controller
     {
         private readonly IInvoiceRepository _invoiceRepository;
+        private readonly IInvoicePdfService _invoicePdfService;
 
-        public InvoiceController(IInvoiceRepository invoiceRepository)
+        public InvoiceController(IInvoiceRepository invoiceRepository, IInvoicePdfService invoicePdfService)
         {
             _invoiceRepository = invoiceRepository;
+            _invoicePdfService = invoicePdfService;
         }
 
         // POST: Add Invoice to Car
@@ -70,6 +74,36 @@ namespace Mekaniko_Secured.Controllers
         {
             var invoiceList = await _invoiceRepository.GetInvoiceListAsync();
             return View(invoiceList);
+        }
+
+        // GET: Generate PDF
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> GeneratePdf(int id, bool download = false)
+        {
+            var invoice = await _invoiceRepository.GetInvoiceDetailsAsync(id);
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+
+            var document = _invoicePdfService.CreateInvoicePdf(invoice);
+
+            var renderer = new PdfDocumentRenderer(true);
+            renderer.Document = document;
+            renderer.RenderDocument();
+
+            using (var stream = new MemoryStream())
+            {
+                renderer.PdfDocument.Save(stream, false);
+                stream.Position = 0;
+                byte[] byteArray = stream.ToArray();
+
+                var contentDisposition = download ? "attachment" : "inline";
+                Response.Headers.Add("Content-Disposition", $"{contentDisposition}; filename=Invoice_{id}.pdf");
+
+                return File(byteArray, "application/pdf");
+            }
+
         }
     }
 }

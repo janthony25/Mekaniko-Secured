@@ -46,6 +46,7 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(
 
 // Register application services for dependency injection
 builder.Services.AddScoped<UserService>(); // Register UserService with scoped lifetime (one instance per request)
+builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
 
 // Repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

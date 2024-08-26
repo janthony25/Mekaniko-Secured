@@ -15,6 +15,7 @@
         public decimal TotalAmount { get; set; }
         public decimal AmountPaid { get; set; }
         public bool IsPaid { get; set; }
-        public List<AddInvoiceItemDto> InvoiceItems { get; set; }
+        public List<AddInvoiceItemDto> InvoiceItems { get; set; } = new List<AddInvoiceItemDto>();
+
     }
 }
