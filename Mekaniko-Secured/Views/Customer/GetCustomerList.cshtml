@@ -40,175 +40,19 @@
     </tbody>
 </table>
 
-<!-- Modal for Adding New Customer -->
-<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addCustomerForm">
-                    @Html.AntiForgeryToken() <!-- Correct way to include the anti-forgery token -->
+@* Render the partial view for modals *@
+@Html.Partial("_CustomerModals")
 
-                    <div class="mb-3">
-                        <label for="CustomerName" class="form-label">Customer Name</label>
-                        <input type="text" class="form-control" id="CustomerName" name="CustomerName" required>
-                        <span id="CustomerNameError" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="CustomerNumber" class="form-label">Contact Number</label>
-                        <input type="text" class="form-control" id="CustomerNumber" name="CustomerNumber" required>
-                        <span id="CustomerNumberError" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="CustomerEmail" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="CustomerEmail" name="CustomerEmail" required>
-                        <span id="CustomerEmailError" class="text-danger"></span>
-                    </div>
-                </form>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal for Confirming Customer Deletion -->
-<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteCustomerModalLabel">Delete Customer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete the following customer?</p>
-                <div class="border p-3">
-                    <p><strong>Customer ID:</strong> <span id="deleteCustomerId"></span></p>
-                    <p><strong>Customer Name:</strong> <span id="deleteCustomerName"></span></p>
-                    <p><strong>Email Address:</strong> <span id="deleteCustomerEmail"></span></p>
-                    <p><strong>Contact #:</strong> <span id="deleteCustomerNumber"></span></p>
-                </div>
-                <input type="hidden" id="hiddenDeleteCustomerId" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteCustomerBtn">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 @section Scripts {
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#saveCustomerBtn').click(function () {
-                var customerName = $('#CustomerName').val();
-                if (!customerName || customerName.trim() === '') {
-                    $('#CustomerNameError').text('Customer Name is required.');
-                    return;
-                } else {
-                    $('#CustomerNameError').text('');
-                }
-
-                var customerData = {
-                    CustomerName: customerName,
-                    CustomerNumber: $('#CustomerNumber').val(),
-                    CustomerEmail: $('#CustomerEmail').val()
-                };
-
-                $.ajax({
-                    url: '@Url.Action("AddNewCustomer", "Customer")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(customerData),
-                    headers: {
-                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                            $('#addCustomerModal').modal('hide');
-                            location.reload();
-                        } else {
-                            handleValidationErrors(response.errors);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error occurred while adding customer.');
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-
-            function handleValidationErrors(errors) {
-                $('#CustomerNameError').text('');
-                $('#CustomerNumberError').text('');
-                $('#CustomerEmailError').text('');
-
-                if (errors) {
-                    if (errors['CustomerName']) {
-                        $('#CustomerNameError').text(errors['CustomerName']);
-                    }
-                    if (errors['CustomerNumber']) {
-                        $('#CustomerNumberError').text(errors['CustomerNumber']);
-                    }
-                    if (errors['CustomerEmail']) {
-                        $('#CustomerEmailError').text(errors['CustomerEmail']);
-                    }
-                }
-            }
-
-            $('.delete-customer-btn').click(function () {
-                var customerId = $(this).data('id');
-                console.log("Customer ID for deletion: " + customerId); // Check this value
-                var customerName = $(this).data('name');
-                var customerEmail = $(this).data('email');
-                var customerNumber = $(this).data('number');
-
-                $('#deleteCustomerId').text(customerId);
-                $('#deleteCustomerName').text(customerName);
-                $('#deleteCustomerEmail').text(customerEmail);
-                $('#deleteCustomerNumber').text(customerNumber);
-                $('#hiddenDeleteCustomerId').val(customerId);  // This is crucial
-
-                $('#deleteCustomerModal').modal('show');
-            });
-
-
-            $('#confirmDeleteCustomerBtn').click(function () {
-                var customerId = $('#hiddenDeleteCustomerId').val().trim();
-
-                $.ajax({
-                    url: '@Url.Action("DeleteCustomer", "Customer")',
-                    type: 'POST',
-                    data: { id: customerId },  // Sending as form data
-                    headers: {
-                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                            $('#deleteCustomerModal').modal('hide');
-                            location.reload();
-                        } else {
-                            alert('Error occurred while deleting customer: ' + response.message);
-                            console.error('Server-side error:', response.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error occurred while deleting customer.');
-                        console.error('AJAX error:', error);
-                        console.error('Status:', status);
-                        console.error('Response:', xhr.responseText);
-                    }
-                });
-            });
-        });
+        // Provide the CSRF token and URL to your external script
+        var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+        var addCustomerUrl = '@Url.Action("AddNewCustomer", "Customer")';
+        var deleteCustomerUrl = '@Url.Action("DeleteCustomer", "Customer")';
     </script>
+    <script src="~/js/customer.js"></script>
 }
