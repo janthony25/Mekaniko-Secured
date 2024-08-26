@@ -1,0 +1,210 @@
+﻿<!-- View Invoice Modal -->
+<div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-labelledby="viewInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewInvoiceModalLabel">View Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="viewInvoiceForm">
+                    <!-- Customer and Car details -->
+                    <div class="customer-car-details d-flex justify-content-between align-items-center container">
+                        <div class="left">
+                            <div class="group">
+                                <label for="ViewCustomerName">Customer Name</label>
+                                <input type="text" id="ViewCustomerName" class="form-control" readonly />
+                            </div>
+                            <!-- Add other customer details -->
+                        </div>
+                        <div class="right">
+                            <div class="group">
+                                <label for="ViewCarRego">Car Rego</label>
+                                <input type="text" id="ViewCarRego" class="form-control" readonly />
+                            </div>
+                            <!-- Add other car details -->
+                        </div>
+                    </div>
+
+                    <!-- Invoice Items -->
+                    <div class="invoice-item-container container mt-4">
+                        <h4 class="heading-title">ITEM LIST</h4>
+                        <div id="viewInvoiceItems" class="invoice-items-container flex-column d-flex mt-2">
+                            <!-- Invoice items will be added here dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Invoice Details -->
+                    <div class="invoice-details d-flex justify-content-between align-items-center container mt-5">
+                        <div class="left">
+                            <div class="group">
+                                <label for="ViewDateAdded">Date Added</label>
+                                <input type="text" id="ViewDateAdded" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="ViewDueDate">Due Date</label>
+                                <input type="text" id="ViewDueDate" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="ViewIssueName">Issue Name</label>
+                                <input type="text" id="ViewIssueName" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="ViewPaymentTerm">Payment Term</label>
+                                <input type="text" id="ViewPaymentTerm" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="ViewNotes">Notes</label>
+                                <textarea id="ViewNotes" class="form-control" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="right d-flex justify-content-between align-items-center">
+                            <div class="right-left">
+                                <div class="group">
+                                    <label for="ViewLaborPrice">Labor Price</label>
+                                    <input type="text" id="ViewLaborPrice" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="ViewDiscount">Discount</label>
+                                    <input type="text" id="ViewDiscount" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="ViewShippingFee">Shipping Fee</label>
+                                    <input type="text" id="ViewShippingFee" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="ViewSubTotal">Sub Total</label>
+                                    <input type="text" id="ViewSubTotal" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="right-right ms-5">
+                                <div class="group">
+                                    <label for="ViewTotalAmount">Total Amount</label>
+                                    <input type="text" id="ViewTotalAmount" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="ViewAmountPaid">Amount Paid</label>
+                                    <input type="text" id="ViewAmountPaid" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="ViewPaymentStatus">Payment Status</label>
+                                    <input type="text" id="ViewPaymentStatus" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Adding New Invoice -->
+<div class="modal fade" id="addInvoiceModal" tabindex="-1" aria-labelledby="addInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addInvoiceModalLabel">Add New Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearInvoiceForm()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="invoiceForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="CarId" name="CarId" value="@Model[0].CarId" />
+
+                    <div class="customer-car-details d-flex justify-content-between align-items-center container">
+                        <!-- Customer and Car details (readonly) -->
+                        <div class="left">
+                            <div class="group">
+                                <label for="CustomerName">Customer Name</label>
+                                <input type="text" id="CustomerName" class="form-control" value="@Model[0].CustomerName" readonly />
+                            </div>
+                            <!-- Add other customer details -->
+                        </div>
+                        <div class="right">
+                            <div class="group">
+                                <label for="CarRego">Car Rego</label>
+                                <input type="text" id="CarRego" class="form-control" value="@Model[0].CarRego" readonly />
+                            </div>
+                            <!-- Add other car details -->
+                        </div>
+                    </div>
+
+                    <div class="invoice-item-container container mt-4">
+                        <h4 class="heading-title">ITEM LIST</h4>
+                        <div id="invoiceItems" class="invoice-items-container flex-column d-flex mt-2">
+                            <!-- Invoice items will be added here dynamically -->
+                        </div>
+                        <button type="button" id="addItemButton" class="btn btn-primary mt-3">Add Item</button>
+                    </div>
+
+                    <div class="invoice-details d-flex justify-content-between align-items-center container mt-5">
+                        <div class="left">
+                            <div class="group">
+                                <label for="DateAdded">Date Added</label>
+                                <input type="date" id="DateAdded" name="DateAdded" class="form-control" />
+                            </div>
+                            <div class="group">
+                                <label for="DueDate">Due Date</label>
+                                <input type="date" id="DueDate" name="DueDate" class="form-control" />
+                            </div>
+                            <div class="group">
+                                <label for="IssueName">Issue Name</label>
+                                <input type="text" id="IssueName" name="IssueName" class="form-control" required />
+                            </div>
+                            <div class="group">
+                                <label for="PaymentTerm">Payment Term</label>
+                                <input type="text" id="PaymentTerm" name="PaymentTerm" class="form-control" />
+                            </div>
+                            <div class="group">
+                                <label for="Notes">Notes</label>
+                                <textarea id="Notes" name="Notes" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="right d-flex justify-content-between align-items-center">
+                            <div class="right-left">
+                                <div class="group">
+                                    <label for="LaborPrice">Labor Price</label>
+                                    <input type="number" id="LaborPrice" name="LaborPrice" class="form-control" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="Discount">Discount</label>
+                                    <input type="number" id="Discount" name="Discount" class="form-control" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="ShippingFee">Shipping Fee</label>
+                                    <input type="number" id="ShippingFee" name="ShippingFee" class="form-control" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="SubTotal">Sub Total</label>
+                                    <input type="number" id="SubTotal" name="SubTotal" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="right-right ms-5">
+                                <div class="group">
+                                    <label for="TotalAmount">Total Amount</label>
+                                    <input type="number" id="TotalAmount" name="TotalAmount" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="AmountPaid">Amount Paid</label>
+                                    <input type="number" id="AmountPaid" name="AmountPaid" class="form-control" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="PaymentStatus">Payment Status</label>
+                                    <input type="text" id="PaymentStatus" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearInvoiceForm()">Close</button>
+                <button type="button" class="btn btn-primary" id="saveInvoiceBtn">Save Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>
