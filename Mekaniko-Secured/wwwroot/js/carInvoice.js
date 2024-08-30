@@ -28,35 +28,24 @@ $(document).ready(function () {
     $('#invoiceForm').on('input', '.calc-input', calculateTotals);
     $('#LaborPrice, #Discount, #ShippingFee, #AmountPaid').on('input', calculateTotals);
 
-    // Event listener for viewing invoice details
-    $('.view-invoice').click(function (e) {
-        e.preventDefault();
-        var invoiceId = $(this).data('invoice-id');
-        fetchInvoiceDetails(invoiceId);
-    });
+    // Event listeners for PDF actions
+    $(document).on('click', '.view-pdf', viewPdf);
+    $(document).on('click', '.download-pdf', downloadPdf);
 });
 
-// Function to populate customer details in the "Add Invoice" modal
 function populateCustomerDetails() {
     console.log('Populating customer details');
-
-    // Get customer details from the main page
     var customerName = $('input[name="[0].CustomerName"]').val();
     var carRego = $('input[name="[0].CarRego"]').val();
     var carModel = $('input[name="[0].CarModel"]').val();
     var carYear = $('input[name="[0].CarYear"]').val();
-
-    // Set the values in the modal fields
     $('#CustomerName').val(customerName);
     $('#CarRego').val(carRego);
     $('#CarModel').val(carModel);
     $('#CarYear').val(carYear);
-
-    console.log('Customer details populated:',
-        { name: customerName, rego: carRego, model: carModel, year: carYear });
+    console.log('Customer details populated:', { name: customerName, rego: carRego, model: carModel, year: carYear });
 }
 
-// Function to add a new invoice item to the form
 function addInvoiceItem() {
     console.log('Adding new invoice item');
     const itemHtml = `
@@ -84,10 +73,8 @@ function addInvoiceItem() {
     calculateTotals();
 }
 
-// Function to calculate totals for the entire invoice
 function calculateTotals() {
     let subTotal = 0;
-    // Calculate totals for each invoice item
     $('.invoice-item').each(function () {
         const quantity = parseFloat($(this).find('.quantity-input').val()) || 0;
         const price = parseFloat($(this).find('.price-input').val()) || 0;
@@ -95,39 +82,28 @@ function calculateTotals() {
         $(this).find('.total-input').val(itemTotal.toFixed(2));
         subTotal += itemTotal;
     });
-
-    // Add labor price and shipping fee to subtotal
     const laborPrice = parseFloat($('#LaborPrice').val()) || 0;
     const shippingFee = parseFloat($('#ShippingFee').val()) || 0;
     subTotal += laborPrice + shippingFee;
-
     $('#SubTotal').val(subTotal.toFixed(2));
-
-    // Calculate total amount after discount
     const discount = parseFloat($('#Discount').val()) || 0;
     const totalAmount = Math.max(subTotal - discount, 0);
     $('#TotalAmount').val(totalAmount.toFixed(2));
-
-    // Determine if the invoice is paid
     const amountPaid = parseFloat($('#AmountPaid').val()) || 0;
     const isPaid = amountPaid >= totalAmount;
-
     $('#PaymentStatus').val(isPaid ? "Paid" : "Not Paid");
     $('#IsPaid').val(isPaid);
 }
 
-// Function to validate the form before submission
 function validateForm() {
     let isValid = true;
     $('.error-message').remove();
-
     $('#invoiceForm [required]').each(function () {
         if ($(this).val().trim() === '') {
             isValid = false;
             $(this).after('<span class="error-message text-danger">This field is required.</span>');
         }
     });
-
     if (!isValidDate($('#DateAdded').val())) {
         isValid = false;
         $('#DateAdded').after('<span class="error-message text-danger">Please enter a valid date.</span>');
@@ -136,11 +112,9 @@ function validateForm() {
         isValid = false;
         $('#DueDate').after('<span class="error-message text-danger">Please enter a valid date.</span>');
     }
-
     return isValid;
 }
 
-// Helper function to validate date format (YYYY-MM-DD)
 function isValidDate(dateString) {
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateString.match(regEx)) return false;
@@ -150,7 +124,6 @@ function isValidDate(dateString) {
     return d.toISOString().slice(0, 10) === dateString;
 }
 
-// Function to submit the invoice data to the server
 function submitInvoice() {
     const invoiceData = {
         CarId: parseInt($('#CarId').val()),
@@ -168,8 +141,6 @@ function submitInvoice() {
         IsPaid: $('#PaymentStatus').val() === "Paid",
         InvoiceItems: []
     };
-
-    // Add invoice items if they exist
     $('.invoice-item').each(function () {
         invoiceData.InvoiceItems.push({
             ItemName: $(this).find('input[name$=".ItemName"]').val(),
@@ -178,9 +149,7 @@ function submitInvoice() {
             ItemTotal: parseFloat($(this).find('input[name$=".ItemTotal"]').val()) || 0
         });
     });
-
     console.log('Submitting invoice data:', invoiceData);
-
     $.ajax({
         url: addInvoiceUrl,
         type: 'POST',
@@ -215,70 +184,6 @@ function submitInvoice() {
     });
 }
 
-// Function to fetch invoice details from the server
-function fetchInvoiceDetails(invoiceId) {
-    $.ajax({
-        url: getInvoiceDetailsUrl + '?id=' + invoiceId, // Use the URL variable defined in the view
-        type: 'GET',
-        success: function (response) {
-            if (response.success) {
-                populateViewModal(response.data);
-                $('#viewInvoiceModal').modal('show');
-            } else {
-                alert('Error: ' + response.message);
-            }
-        },
-        error: function () {
-            alert('An error occurred while fetching invoice details.');
-        }
-    });
-}
-
-// Function to populate the view modal with invoice details
-function populateViewModal(invoice) {
-    $('#ViewInvoiceId').val(invoice.invoiceId);  // Ensure
-    $('#ViewCustomerName').val(invoice.customerName);
-    $('#ViewCarRego').val(invoice.carRego);
-    $('#ViewDateAdded').val(invoice.dateAdded);
-    $('#ViewDueDate').val(invoice.dueDate);
-    $('#ViewIssueName').val(invoice.issueName);
-    $('#ViewPaymentTerm').val(invoice.paymentTerm);
-    $('#ViewNotes').val(invoice.notes);
-    $('#ViewLaborPrice').val(invoice.laborPrice);
-    $('#ViewDiscount').val(invoice.discount);
-    $('#ViewShippingFee').val(invoice.shippingFee);
-    $('#ViewSubTotal').val(invoice.subTotal);
-    $('#ViewTotalAmount').val(invoice.totalAmount);
-    $('#ViewAmountPaid').val(invoice.amountPaid);
-    $('#ViewPaymentStatus').val(invoice.isPaid ? 'Paid' : 'Not Paid');
-
-    $('#viewInvoiceItems').empty();
-    invoice.invoiceItems.forEach(function (item) {
-        var itemHtml = `
-            <div class="invoice-item d-flex mb-3">
-                <div class="form-group">
-                    <label>Item Name</label>
-                    <input type="text" class="form-control" value="${item.itemName}" readonly />
-                </div>
-                <div class="form-group ms-4">
-                    <label>Quantity</label>
-                    <input type="text" class="form-control" value="${item.quantity}" readonly />
-                </div>
-                <div class="form-group ms-4">
-                    <label>Item Price</label>
-                    <input type="text" class="form-control" value="${item.itemPrice}" readonly />
-                </div>
-                <div class="form-group ms-4">
-                    <label>Item Total</label>
-                    <input type="text" class="form-control" value="${item.itemTotal}" readonly />
-                </div>
-            </div>
-        `;
-        $('#viewInvoiceItems').append(itemHtml);
-    });
-}
-
-// Function to clear the invoice form
 function clearInvoiceForm() {
     console.log('Clearing invoice form');
     $('#invoiceForm')[0].reset();
@@ -289,29 +194,63 @@ function clearInvoiceForm() {
     $('#DateAdded, #DueDate, #IssueName, #PaymentTerm, #Notes, #LaborPrice, #Discount, #ShippingFee, #AmountPaid').val('');
     $('.invoice-item').remove();
     console.log('Invoice form cleared');
-    populateCustomerDetails(); // Re-populate customer details after clearing
+    populateCustomerDetails();
 }
 
-// Event listener for viewing PDF
-$(document).on('click', '#viewPdfBtn', function () {
-    var invoiceId = $('#ViewInvoiceId').val();
-    if (invoiceId) {
-        var viewUrl = '/Invoice/GeneratePdf?id=' + invoiceId;
-        window.open(viewUrl, '_blank');
-    } else {
-        console.error('Invoice ID not found');
-        alert('Unable to view PDF: Invoice ID not found');
+function viewPdf(e) {
+    e.preventDefault();
+    console.log('View PDF button clicked');
+    var invoiceId = $(this).data('invoice-id');
+    console.log('Invoice ID:', invoiceId);
+    if (!invoiceId) {
+        console.error('No invoice ID found');
+        return;
     }
-});
+    var viewUrl = '/Invoice/GeneratePdf?id=' + invoiceId;
+    console.log('View URL:', viewUrl);
+    $('#pdfViewerFrame').attr('src', viewUrl);
+    console.log('iframe src set');
+    $('#pdfViewerModal').modal('show');
+    console.log('Modal should be shown now');
+}
 
-// Event listener for downloading PDF
-$(document).on('click', '#generatePdfBtn', function () {
-    var invoiceId = $('#ViewInvoiceId').val();
-    if (invoiceId) {
-        var downloadUrl = '/Invoice/GeneratePdf?id=' + invoiceId + '&download=true';
-        window.location.href = downloadUrl;
-    } else {
-        console.error('Invoice ID not found');
-        alert('Unable to download PDF: Invoice ID not found');
-    }
+function downloadPdf(e) {
+    e.preventDefault();
+    var invoiceId = $(this).data('invoice-id');
+    var downloadUrl = '/Invoice/GeneratePdf?id=' + invoiceId + '&download=true';
+    window.location.href = downloadUrl;
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    var date = new Date(dateString);
+    return date.toLocaleDateString();
+}
+
+
+// Add this to your existing document.ready function
+$(document).on('click', '.send-invoice-email', function (e) {
+    e.preventDefault();
+    var invoiceId = $(this).data('invoice-id');
+    console.log('Sending email for invoice ID:', invoiceId);
+
+    $.ajax({
+        url: '/Invoice/SendInvoiceEmail',
+        type: 'POST',
+        data: { invoiceId: invoiceId },
+        headers: {
+            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+        },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert('An error occurred while sending the email. Please try again.');
+        }
+    });
 });

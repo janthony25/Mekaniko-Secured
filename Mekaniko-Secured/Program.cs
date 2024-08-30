@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy =>
-        policy.RequireRole("Admin")); // Define an "Admin" policy that requires the user to have the "Admin" role
+        policy.RequireRole("Admin")); 
 });
 
 // Configure Entity Framework Core to use SQL Server
@@ -45,13 +45,19 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(
     ));
 
 // Register application services for dependency injection
-builder.Services.AddScoped<UserService>(); // Register UserService with scoped lifetime (one instance per request)
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
 
 // Repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+// Add email service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+
+// Razor Runtime Compilation
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 // Configure logging to use settings from appsettings.json and to log to the console
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));

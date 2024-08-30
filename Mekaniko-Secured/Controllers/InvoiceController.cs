@@ -11,11 +11,13 @@ namespace Mekaniko_Secured.Controllers
     {
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly IInvoicePdfService _invoicePdfService;
+        private readonly IEmailService _emailService;
 
-        public InvoiceController(IInvoiceRepository invoiceRepository, IInvoicePdfService invoicePdfService)
+        public InvoiceController(IInvoiceRepository invoiceRepository, IInvoicePdfService invoicePdfService, IEmailService emailService)
         {
             _invoiceRepository = invoiceRepository;
             _invoicePdfService = invoicePdfService;
+            _emailService = emailService;
         }
 
         // POST: Add Invoice to Car
@@ -104,6 +106,57 @@ namespace Mekaniko_Secured.Controllers
                 return File(byteArray, "application/pdf");
             }
 
+        }
+
+        // POST: SENDING PDF TO EMAIL
+        [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendInvoiceEmail(int invoiceId)
+        {
+            try
+            {
+                var invoice = await _invoiceRepository.GetInvoiceDetailsAsync(invoiceId);
+                if (invoice == null)
+                {
+                    return Json(new { success = false, message = "Invoice not found" });
+                }
+
+
+                // Generate the PDF using MigraDoc
+                var document = _invoicePdfService.CreateInvoicePdf(invoice);
+                var renderer = new PdfDocumentRenderer(true);
+                renderer.Document = document;
+                renderer.RenderDocument();
+
+                // Convert the PDF to a byte array
+                byte[] pdfBytes;
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    renderer.PdfDocument.Save(stream, false);
+                    pdfBytes = stream.ToArray();
+                }
+
+                // Prepare email content
+                string subject = $"Invoice #{invoice.InvoiceId} from Mobile Mekaniko";
+                string body = $"Dear {invoice.CustomerName},\n\nPlease find your attached invoice (Invoice ID: {invoice.InvoiceId}).\n\nThank you for your business.\n\nBest regards,\nMobile Mekaniko";
+
+                // Send the email
+                await _emailService.SendEmailWithAttachmentAsync(
+                    invoice.CustomerEmail,
+                    subject,
+                    body,
+                    pdfBytes,
+                    $"Invoice_{invoice.InvoiceId}.pdf"
+                    );
+
+                return Json(new { success = true, message = $"Email sent successfully to {invoice.CustomerName}" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exceptoin
+                return Json(new {success = false, message = $"An error occurred: {ex.Message}" });
+            }
         }
     }
 }

@@ -54,7 +54,7 @@
         <h2>Transactions</h2>
     </div>
     <div class="right">
-        <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addInvoiceModal"><i class="bi bi-plus-square-fill"></i> Invoice</a>
+        <a class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#addInvoiceModal"><i class="bi bi-plus-square-fill"></i> Invoice</a>
     </div>
 </div>
 <input type="hidden" id="ViewInvoiceId" />
@@ -84,11 +84,18 @@
                 <td>@invoice.IsPaid</td>
                 <td>
                     <div>
-                        <a href="#" class="view-invoice" data-invoice-id="@invoice.InvoiceId">
+                        @* <a href="#" class="view-invoice" data-invoice-id="@invoice.InvoiceId">
                             <i class="bi bi-eye"></i>
+                        </a> *@
+                        @*View Pdf Modal*@
+                        <button class="btn btn-sm btn-primary view-pdf" data-invoice-id="@invoice.InvoiceId"><i class="bi bi-file-pdf"></i> PDF</button>
+                        <a href="#" class="btn btn-sm btn-success download-pdf" data-invoice-id="@invoice.InvoiceId">
+                            <i class="bi bi-download"></i> Download
                         </a>
-                        <a><i class="bi bi-pencil-square"></i></a>
-                        <a><i class="bi bi-trash3-fill"></i></a>
+                        <a href="#" class="btn btn-sm btn-warning send-invoice-email" data-invoice-id="@invoice.InvoiceId">
+                            <i class="bi bi-envelope-paper"></i> Email
+                        </a>
+                        <a class="btn btn-sm btn-danger"><i class="bi bi-trash3-fill"></i></a>
                     </div>
                 </td>
             </tr>
