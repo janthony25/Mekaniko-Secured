@@ -9,5 +9,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<bool> DeleteCustomerByIdAsync(int id);
         Task<CustomerDto> GetCustomerCarsByIdAsync(int id);
         Task<bool> AddCarToCustomerAsync(AddCarDto dto);
+        Task<int> GetTotalCustomerCountAsync();
     }
 }

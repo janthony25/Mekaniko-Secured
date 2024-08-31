@@ -3,6 +3,7 @@
     public class InvoiceListDto
     {
         public int InvoiceId { get; set; }
+        public string IssueName { get; set; }
         public DateTime? DateAdded { get; set; }
         public DateTime? DueDate { get; set; }
         public decimal? TotalAmount { get; set; }

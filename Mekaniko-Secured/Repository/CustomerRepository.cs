@@ -121,5 +121,10 @@ namespace Mekaniko_Secured.Repository
                     CustomerNumber = c.CustomerNumber
                 }).ToListAsync();
         }
+
+        public async Task<int> GetTotalCustomerCountAsync()
+        {
+            return await _data.Customers.CountAsync();
+        }
     }
 }

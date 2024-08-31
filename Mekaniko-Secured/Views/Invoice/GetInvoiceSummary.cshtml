@@ -5,13 +5,16 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Date</th>
-            <th>Invoice ID</th>
-            <th>Customer</th>
-            <th>Car Rego</th>
-            <th>Amount Due</th>
-            <th>Total</th>
             <th>Status</th>
+            <th>Issue</th>
+            <th>Invoice #</th>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Due Date</th>
+            <th>Rego #</th>
+            <th>Total</th>
+            <th>Sent</th>
+            <th>Action</th>
             <th></th>
         </tr>
     </thead>
@@ -19,16 +22,27 @@
         @foreach (var invoice in Model)
         {
             <tr>
-                <td>@invoice.DateAdded</td>
+                <td>@invoice.IsPaid</td>
+                <td>@invoice.IssueName</td>
                 <td>@invoice.InvoiceId</td>
                 <td>@invoice.CustomerName</td>
-                <td>@invoice.CarRego</td>
+                <td>@invoice.DateAdded</td>
                 <td>@invoice.DueDate</td>
+                <td>@invoice.CarRego</td>
                 <td>@invoice.TotalAmount</td>
-                <td>@invoice.IsPaid</td>
+                <td> <p></p> </td>
                 <td>
-                    <a>Edit</a>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="actionDropdown">
+                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                        </ul>
+                    </div>
                 </td>
+
             </tr>
         }
     </tbody>

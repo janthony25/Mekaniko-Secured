@@ -7,5 +7,10 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task AddInvoiceToCarAsync(AddCarInvoiceDto dto);
         Task<InvoiceDetailsDto> GetInvoiceDetailsAsync(int id);
         Task<List<InvoiceListDto>> GetInvoiceListAsync();
+        Task<int> GetTotalInvoiceCountAsync();
+        Task<decimal> GetTotalInvoiceAmountAsync();
+        Task<decimal> GetTotalPaidAmountAsync();
+        Task<decimal> GetRemainingBalanceAsync();
+        Task<List<UnpaidInvoiceListDto>> GetUnpaidInvoicesAsync();
     }
 }

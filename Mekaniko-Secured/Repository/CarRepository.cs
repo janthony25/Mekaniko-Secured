@@ -105,5 +105,10 @@ namespace Mekaniko_Secured.Repository
                     IsPaid = invoice.IsPaid
                 }).ToListAsync();
         }
+
+        public async Task<int> GetTotalCarCountAsync()
+        {
+            return await _data.Cars.CountAsync();
+        }
     }
 }

@@ -113,15 +113,59 @@ namespace Mekaniko_Secured.Repository
                     .ThenInclude(car => car.Customer)
                 .Select(i => new InvoiceListDto
                 {
+                    IsPaid = i.IsPaid,
+                    IssueName = i.IssueName,
                     InvoiceId = i.InvoiceId,
                     DateAdded = i.DateAdded,
                     DueDate = i.DueDate,
-                    TotalAmount = i.TotalAmount,
-                    IsPaid = i.IsPaid,
-                    CustomerId = i.Car.Customer.CustomerId,
                     CustomerName = i.Car.Customer.CustomerName,
-                    CarId = i.Car.CarId,
-                    CarRego = i.Car.CarRego
+                    CarRego = i.Car.CarRego,
+                    TotalAmount = i.TotalAmount
+                }).ToListAsync();
+        }
+
+        public async Task<decimal> GetRemainingBalanceAsync()
+        {
+            // Get the total amount of Invoice and paid amount
+            var totalInvoiceAmount = await GetTotalInvoiceAmountAsync();
+            var totalPaidAmount = await GetTotalPaidAmountAsync();
+
+            // Calculate the remaining amount
+            var remainingBalance = totalInvoiceAmount - totalPaidAmount;
+
+            return remainingBalance;
+        }
+
+        public async Task<decimal> GetTotalInvoiceAmountAsync()
+        {
+            return await _data.Invoices.SumAsync(i => i.TotalAmount ?? 0m);
+        }
+
+        public async Task<int> GetTotalInvoiceCountAsync()
+        {
+            return await _data.Invoices.CountAsync();
+        }
+
+        public async Task<decimal> GetTotalPaidAmountAsync()
+        {
+            return await _data.Invoices.SumAsync(i => i.AmountPaid ?? 0m);
+        }
+
+        public async Task<List<UnpaidInvoiceListDto>> GetUnpaidInvoicesAsync()
+        {
+            return await _data.Invoices
+                .Include(i => i.Car)
+                    .ThenInclude(car => car.Customer)
+                .Where(i => i.IsPaid == false)
+                .Select(i => new UnpaidInvoiceListDto
+                {
+                    InvoiceId = i.InvoiceId,
+                    CustomerName = i.Car.Customer.CustomerName,
+                    CarRego = i.Car.CarRego,
+                    DateAdded = i.DateAdded,
+                    DueDate = i.DueDate,
+                    TotalAmount = i.TotalAmount,
+                    isPaid = i.IsPaid
                 }).ToListAsync();
         }
     }

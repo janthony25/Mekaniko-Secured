@@ -68,7 +68,7 @@
             <th>Total Amount</th>
             <th>Amount Paid</th>
             <th>Status</th>
-            <th></th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -77,25 +77,47 @@
             <tr>
                 <td>@invoice.InvoiceId</td>
                 <td>@invoice.IssueName</td>
-                <td>@invoice.DateAdded</td>
-                <td>@invoice.DueDate</td>
+                <td>@invoice.DateAdded?.ToString("MM/dd/yyyy")</td>
+                <td>@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
                 <td>@invoice.TotalAmount</td>
                 <td>@invoice.AmountPaid</td>
                 <td>@invoice.IsPaid</td>
                 <td>
                     <div>
-                        @* <a href="#" class="view-invoice" data-invoice-id="@invoice.InvoiceId">
-                            <i class="bi bi-eye"></i>
-                        </a> *@
+                        
                         @*View Pdf Modal*@
-                        <button class="btn btn-sm btn-primary view-pdf" data-invoice-id="@invoice.InvoiceId"><i class="bi bi-file-pdf"></i> PDF</button>
-                        <a href="#" class="btn btn-sm btn-success download-pdf" data-invoice-id="@invoice.InvoiceId">
-                            <i class="bi bi-download"></i> Download
-                        </a>
-                        <a href="#" class="btn btn-sm btn-warning send-invoice-email" data-invoice-id="@invoice.InvoiceId">
-                            <i class="bi bi-envelope-paper"></i> Email
-                        </a>
-                        <a class="btn btn-sm btn-danger"><i class="bi bi-trash3-fill"></i></a>
+
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="actionDropdown">
+                               @*  <li>
+                                    <a href="#" class="dropdown-item view-invoice" data-invoice-id="@invoice.InvoiceId">
+                                        <i class="bi bi-eye"></i> Open Invoice
+                                    </a>
+                                </li> *@
+                                <li>
+                                    <button class="dropdown-item view-pdf" data-invoice-id="@invoice.InvoiceId"><i class="bi bi-file-pdf"></i> View PDF</button>
+                                </li>
+                                <li>
+                                    <a href="#" class="dropdown-item download-pdf" data-invoice-id="@invoice.InvoiceId">
+                                        <i class="bi bi-download"></i> Download PDF
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="dropdown-item send-invoice-email" data-invoice-id="@invoice.InvoiceId">
+                                        <i class="bi bi-envelope-paper"></i> Send Email
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item btn-danger"><i class="bi bi-trash3-fill"></i> Delete Invoice</a>
+                                </li>
+                            </ul>
+                        </div>
+                       
+                        
+                        
                     </div>
                 </td>
             </tr>

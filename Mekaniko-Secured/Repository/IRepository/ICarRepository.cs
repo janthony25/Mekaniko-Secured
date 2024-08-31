@@ -8,5 +8,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<List<MakeDto>> GetAllMakesAsync();
         Task<bool> DeleteCarByIdAsync(int id);
         Task<List<CarInvoiceSummaryDto>> GetCarInvoiceSummaryByCarIdAsync(int id);
+        Task<int> GetTotalCarCountAsync();
     }
 }

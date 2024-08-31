@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
 
-// Register MVC controllers with views (required for an MVC application)
 builder.Services.AddControllersWithViews();
 
 // Configure session state storage in memory (useful for storing small amounts of user data between requests)
@@ -81,11 +79,11 @@ app.UseRouting();
 app.UseAuthentication(); // Enable authentication middleware to check user credentials
 app.UseAuthorization();  // Enable authorization middleware to enforce policies and roles
 
-app.UseSession(); // Enable session management in the application
+app.UseSession();
 
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Index}/{id?}");
 
-app.Run(); // Run the application
+app.Run();

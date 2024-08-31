@@ -1,0 +1,81 @@
+﻿@model Mekaniko_Secured.Models.Dto.DashboardDataDto
+
+<h2>Dashboard</h2>
+
+<div class="customer-car-invoice-count d-flex">
+    <div class="customer-count-box d-flex justify-content-between align-items-center">
+        <div class="customer-count-left">
+            <i class="bi bi-file-person"></i>
+        </div>
+        <div class="customer-count-right">
+            <h5>Customers</h5>
+            <h3>@Model.TotalCustomers</h3>
+        </div>
+    </div>
+    <div class="car-count-box d-flex justify-content-between align-items-center">
+        <div class="car-count-left">
+            <i class="bi bi-car-front"></i>
+        </div>
+        <div class="car-count-right">
+            <h5>Cars</h5>
+            <h3>@Model.TotalCars</h3>
+        </div>
+    </div>
+    <div class="invoice-count-box d-flex justify-content-between align-items-center">
+        <div class="invoice-count-left">
+            <i class="bi bi-receipt-cutoff"></i>
+        </div>
+        <div class="invoice-count-right">
+            <h5>Invoices</h5>
+            <h3>@Model.TotalInvoices</h3>
+        </div>
+    </div>
+</div>
+
+<div class="payment-summary-container d-flex justify-content-between align-items-center">
+    <div class="chart-container mt-5">
+        <h4>Payment Summary</h4>
+        <canvas id="paymentChart"></canvas>
+    </div>
+    <div class="unpaid-invoice-table-container">
+        <h4>Unpaid Invoices</h4>
+        <table class="table" style="width: 600px">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width:10px">#</th>
+                    <th class="text-center" style="width:10px">Name</th>
+                    <th class="text-center" style="width:10px">Rego #</th>
+                    <th class="text-center" style="width:10px">Due Date</th>
+                    <th class="text-center" style="width:10px">Amount</th>
+                    <th class="text-center" style="width:10px">Status</th>
+                    <th class="text-center" style="width:10px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model.UnpaidInvoices)
+                {
+                    <tr>
+                        <td class="text-center">@invoice.InvoiceId</td>
+                        <td class="text-center">@invoice.CustomerName</td>
+                        <td class="text-center">@invoice.CarRego</td>
+                        <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
+                        <td class="text-center">@invoice.TotalAmount</td>
+                        <td class="text-center payment-status-column"><p class="payment-status-bar">@(invoice.isPaid == true ? "Paid" : "Not Paid")</p></td>
+                        <td class="text-center">View</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@section Scripts {
+        <script> 
+            var TotalInvoiceAmount = @Model.TotalInvoiceAmount;
+            var TotalPaidAmount = @Model.TotalPaidAmount;
+            var RemainingBalance = @Model.RemainingBalance;
+        </script>
+        <script src="~/js/dashboard.js"></script>
+    }
