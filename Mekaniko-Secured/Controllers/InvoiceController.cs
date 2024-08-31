@@ -152,6 +152,9 @@ namespace Mekaniko_Secured.Controllers
                     $"Invoice_{invoice.InvoiceId}.pdf"
                     );
 
+                // after successfully sending email
+                await _invoiceRepository.MarkEmailAsSentAsync(invoiceId);
+
                 return Json(new { success = true, message = $"Email sent successfully to {invoice.CustomerName}" });
             }
             catch (Exception ex)

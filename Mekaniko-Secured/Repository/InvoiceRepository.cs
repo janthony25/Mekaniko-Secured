@@ -115,6 +115,7 @@ namespace Mekaniko_Secured.Repository
                 .Select(i => new InvoiceListDto
                 {
                     IsPaid = i.IsPaid,
+                    IsEmailSent = i.IsEmailSent,
                     IssueName = i.IssueName,
                     InvoiceId = i.InvoiceId,
                     DateAdded = i.DateAdded,
@@ -167,6 +168,17 @@ namespace Mekaniko_Secured.Repository
                     TotalAmount = i.TotalAmount,
                     isPaid = i.IsPaid
                 }).ToListAsync();
+        }
+
+        public async Task<bool> MarkEmailAsSentAsync(int invoiceId)
+        {
+            var invoice = await _data.Invoices.FindAsync(invoiceId);
+            if (invoice != null)
+            {
+                invoice.IsEmailSent = true;
+                await _data.SaveChangesAsync(); 
+            }
+            return false;
         }
 
         public async Task<bool> MarkInvoiceAsPaidAsync(int invoiceId)

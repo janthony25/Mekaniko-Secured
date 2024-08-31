@@ -8,6 +8,7 @@
         public DateTime? DueDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public bool? IsPaid { get; set; }
+        public bool? IsEmailSent { get; set; } // will mark the email as sent
 
         // CUSTOMER
         public int CustomerId { get; set; }

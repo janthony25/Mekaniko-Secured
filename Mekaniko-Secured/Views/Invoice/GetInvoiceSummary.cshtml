@@ -30,15 +30,49 @@
                 <td>@invoice.DueDate</td>
                 <td>@invoice.CarRego</td>
                 <td>@invoice.TotalAmount</td>
-                <td> <p></p> </td>
+                <td>
+                    @if (invoice.IsEmailSent == true)
+                    {
+                        <i class="bi bi-check-lg"></i>
+                    }
+                    else
+                    {
+                        <p></p>
+                    }
+                    
+                </td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="actionDropdown">
-                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                            @*  <li>
+                        <a href="#" class="dropdown-item view-invoice" data-invoice-id="@invoice.InvoiceId">
+                        <i class="bi bi-eye"></i> Open Invoice
+                        </a>
+                        </li> *@
+                            <li>
+                                <button class="dropdown-item mark-as-paid" data-invoice-id="@invoice.InvoiceId">
+                                    <i class="bi bi-check-lg"></i> Mark as Paid
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item view-pdf" data-invoice-id="@invoice.InvoiceId"><i class="bi bi-file-pdf"></i> View PDF</button>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item download-pdf" data-invoice-id="@invoice.InvoiceId">
+                                    <i class="bi bi-download"></i> Download PDF
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item send-invoice-email" data-invoice-id="@invoice.InvoiceId">
+                                    <i class="bi bi-envelope-paper"></i> Send Email
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-danger"><i class="bi bi-trash3-fill"></i> Delete Invoice</a>
+                            </li>
                         </ul>
                     </div>
                 </td>
@@ -47,3 +81,26 @@
         }
     </tbody>
 </table>
+
+<div id="scriptData"
+     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")">
+</div>
+@*Render the partial view for modals*@
+@Html.Partial("_InvoiceSummaryModals")
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
+
+    <script>
+        // Provide the CSRF token and URLs to your external script
+        var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+        var addInvoiceUrl = '@Url.Action("AddInvoiceToCar", "Invoice")';
+        var getInvoiceDetailsUrl = '@Url.Action("GetInvoiceDetails", "Invoice")';
+
+
+        var markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
+    </script>
+
+    <script src="~/js/carInvoice.js"></script>  <!-- External JS file -->
+}

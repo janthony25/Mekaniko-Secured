@@ -18,6 +18,7 @@ namespace Mekaniko_Secured.Models
         public decimal? TaxAmount { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal? AmountPaid { get; set; }
+        public bool? IsEmailSent { get; set; } // will mark the email as sent
         public bool? IsPaid { get; set; }
 
         // FK to Car
