@@ -5,32 +5,41 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Status</th>
-            <th>Issue</th>
-            <th>Invoice #</th>
-            <th>Name</th>
-            <th>Created</th>
-            <th>Due Date</th>
-            <th>Rego #</th>
-            <th>Total</th>
-            <th>Sent</th>
-            <th>Action</th>
-            <th></th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Issue</th>
+            <th class="text-center">Invoice #</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Created</th>
+            <th class="text-center">Due Date</th>
+            <th class="text-center">Rego #</th>
+            <th class="text-center">Total</th>
+            <th class="text-center">Sent</th>
+            <th class="text-center">Action</th>
+            <th class="text-center"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var invoice in Model)
         {
             <tr>
-                <td>@invoice.IsPaid</td>
-                <td>@invoice.IssueName</td>
-                <td>@invoice.InvoiceId</td>
-                <td>@invoice.CustomerName</td>
-                <td>@invoice.DateAdded</td>
-                <td>@invoice.DueDate</td>
-                <td>@invoice.CarRego</td>
-                <td>@invoice.TotalAmount</td>
-                <td>
+                <td class="payment-status-column text-center">
+                    @if (invoice.IsPaid == true)
+                    {
+                        <p class="payment-status-paid">Paid</p>
+                    }
+                    else
+                    {
+                        <p class="payment-status-not-paid">Not Paid</p>
+                    }
+                </td>
+                <td class="text-center">@invoice.IssueName</td>
+                <td class="text-center">@invoice.InvoiceId</td>
+                <td class="text-center">@invoice.CustomerName</td>
+                <td class="text-center">@invoice.DateAdded?.ToString("MM/dd/yyyy")</td>
+                <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
+                <td class="text-center">@invoice.CarRego</td>
+                <td class="text-center">@invoice.TotalAmount</td>
+                <td class="text-center">
                     @if (invoice.IsEmailSent == true)
                     {
                         <i class="bi bi-check-lg"></i>
@@ -41,7 +50,7 @@
                     }
                     
                 </td>
-                <td>
+                <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="visually-hidden">Toggle Dropdown</span>
@@ -85,6 +94,7 @@
 <div id="scriptData"
      data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")">
 </div>
+
 @*Render the partial view for modals*@
 @Html.Partial("_InvoiceSummaryModals")
 
@@ -97,8 +107,6 @@
         var csrfToken = $('input[name="__RequestVerificationToken"]').val();
         var addInvoiceUrl = '@Url.Action("AddInvoiceToCar", "Invoice")';
         var getInvoiceDetailsUrl = '@Url.Action("GetInvoiceDetails", "Invoice")';
-
-
         var markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
     </script>
 

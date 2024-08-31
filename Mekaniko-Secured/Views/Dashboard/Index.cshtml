@@ -1,6 +1,12 @@
 ﻿@model Mekaniko_Secured.Models.Dto.DashboardDataDto
 
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
 <h2>Dashboard</h2>
+
+@Html.AntiForgeryToken()
 
 <div class="customer-car-invoice-count d-flex">
     <div class="customer-count-box d-flex justify-content-between align-items-center">
@@ -38,14 +44,21 @@
         <canvas id="paymentChart"></canvas>
     </div>
     <div class="unpaid-invoice-table-container">
-        <h4>Unpaid Invoices</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4>Unpaid Invoices</h4>
+            </div>
+            <div>
+                <a href="#">View All</a>
+            </div>
+        </div>
         <table class="table" style="width: 600px">
             <thead>
                 <tr>
                     <th class="text-center" style="width:10px">#</th>
                     <th class="text-center" style="width:150px">Rego #</th>
                     <th class="text-center" style="width:150px">Issue</th>
-                    <th class="text-center" style="width:10px">Due Date</th>
+                    <th class="text-center" style="width:120px">Due Date</th>
                     <th class="text-center" style="width:100px">Amount</th>
                     <th class="text-center" style="width:170px">Status</th>
                     <th class="text-center" style="width:10px"></th>
@@ -54,28 +67,99 @@
             <tbody>
                 @foreach (var invoice in Model.UnpaidInvoices)
                 {
-                    <tr>
-                        <td class="text-center">@invoice.InvoiceId</td>
-                        <td class="text-center">@invoice.CarRego</td>
-                        <td class="text-center">@invoice.IssueName</td>
-                        <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
-                        <td class="text-center">@invoice.TotalAmount</td>
-                        <td class="text-center payment-status-column"><p class="payment-status-bar">@(invoice.isPaid == true ? "Paid" : "Not Paid")</p></td>
-                        <td class="text-center">View</td>
-                    </tr>
+                        <tr>
+                            <td class="text-center">@invoice.InvoiceId</td>
+                            <td class="text-center">@invoice.CarRego</td>
+                            <td class="text-center">@invoice.IssueName</td>
+                            <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
+                            <td class="text-center">@invoice.TotalAmount</td>
+                            <td class="text-center payment-status-column">
+                            <p class="payment-status-not-paid">@(invoice.isPaid == true ? "Paid" : "Not Paid")</p>
+                                </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown_@invoice.InvoiceId" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="actionDropdown_@invoice.InvoiceId">
+                                        <li>
+                                            <button class="dropdown-item mark-as-paid" data-invoice-id="@invoice.InvoiceId">
+                                                <i class="bi bi-check-lg"></i> Mark as Paid
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item view-pdf" data-invoice-id="@invoice.InvoiceId">
+                                                <i class="bi bi-file-pdf"></i> View PDF
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item download-pdf" data-invoice-id="@invoice.InvoiceId">
+                                                <i class="bi bi-download"></i> Download PDF
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item send-invoice-email" data-invoice-id="@invoice.InvoiceId">
+                                                <i class="bi bi-envelope-paper"></i> Send Email
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item btn-danger delete-invoice" data-invoice-id="@invoice.InvoiceId">
+                                                <i class="bi bi-trash3-fill"></i> Delete Invoice
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
 
+<!-- Store the CSRF token and URLs as data attributes on a global element -->
+<div id="scriptData"
+     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")"
+     data-send-email-url="@Url.Action("SendInvoiceEmail", "Invoice")"
+     data-view-pdf-url="@Url.Action("GeneratePdf", "Invoice")"
+     data-download-pdf-url="@Url.Action("GeneratePdf", "Invoice", new { download = true })">
+</div>
 
+@* Render the partial view for modals *@
+@await Html.PartialAsync("_DashboardUnpaidDropdownModals")
 
 @section Scripts {
-        <script> 
-            var TotalInvoiceAmount = @Model.TotalInvoiceAmount;
-            var TotalPaidAmount = @Model.TotalPaidAmount;
-            var RemainingBalance = @Model.RemainingBalance;
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
+
+        <script>
+            // Provide the CSRF token and URLs to your external scripts
+            var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+            var addInvoiceUrl = '@Url.Action("AddInvoiceToCar", "Invoice")';
+            var getInvoiceDetailsUrl = '@Url.Action("GetInvoiceDetails", "Invoice")';
+            var markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
+            var sendEmailUrl = $('#scriptData').data('send-email-url');
+            var viewPdfUrl = $('#scriptData').data('view-pdf-url');
+            var downloadPdfUrl = $('#scriptData').data('download-pdf-url');
+
+            // Chart data
+            var TotalInvoiceAmount = @Json.Serialize(Model.TotalInvoiceAmount);
+            var TotalPaidAmount = @Json.Serialize(Model.TotalPaidAmount);
+            var RemainingBalance = @Json.Serialize(Model.RemainingBalance);
         </script>
+
+        <script src="~/js/carInvoice.js"></script>
         <script src="~/js/dashboard.js"></script>
-    }
+
+        <script>
+            $(document).ready(function() {
+                console.log('Dashboard page loaded');
+                console.log('CSRF Token:', csrfToken);
+                console.log('Mark as Paid URL:', markAsPaidUrl);
+                console.log('Send Email URL:', sendEmailUrl);
+
+                // Additional initialization code can go here
+            });
+        </script>
+}

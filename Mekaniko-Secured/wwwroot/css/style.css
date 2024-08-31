@@ -2,6 +2,52 @@
 }
 
 
+
+
+/************************ TABLE SIZES *********************** */
+.table.table-striped td,
+.table.table-striped th {
+    padding: 5px 5px; /* Reduce padding further */
+    line-height: 2; /* Slightly reduce line height */
+}
+
+.table.table-striped p {
+    margin: 0; /* Remove margin from p tags */
+    padding: 0; /* Remove padding from p tags */
+}
+
+.table.table-striped .dropdown-toggle {
+    padding: 2px 9px; /* Reduce padding on dropdown toggle */
+}
+
+.table.table-striped i {
+    font-size: 15px; /* Ensure icons are small */
+}
+
+.table.table-striped {
+    font-size: 15px; /* Keep text size small */
+}
+
+/*********************************************** */
+
+
+
+/************************ DROPDOWN SIZES *********************** */
+.btn-outline-secondary.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: middle;
+    transform: translateY(0); /* Reset any transformations */
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/*********************************************** */
+
+
+
 /************************ DASHBOARD *********************** */
 
 .customer-count-box,
@@ -41,10 +87,19 @@
 }
 
 /*UNPAID STATUS TABLE*/
-.payment-status-column .payment-status-bar {
+.payment-status-column .payment-status-not-paid {
     margin: 0;
     padding: 3.5px;
     color: white;
     background-color: rgba(209, 46, 46, 0.8);
     border-radius: 40px;
 }
+
+.payment-status-column .payment-status-paid {
+    margin: 0;
+    padding: 3.5px;
+    color: black;
+    background-color: rgba(52, 209, 131, 0.8);
+    border-radius: 40px;
+}
+
