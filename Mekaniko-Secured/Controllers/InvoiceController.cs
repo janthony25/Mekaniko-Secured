@@ -4,6 +4,8 @@ using Mekaniko_Secured.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MigraDoc.Rendering;
+using System.Linq.Expressions;
+using System.Text.Json.Serialization;
 
 namespace Mekaniko_Secured.Controllers
 {
@@ -156,6 +158,32 @@ namespace Mekaniko_Secured.Controllers
             {
                 // Log the exceptoin
                 return Json(new {success = false, message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
+        // POST: Mark Invoice as Paid
+        [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsPaid(int invoiceId)
+        {
+            Console.WriteLine($"MarkAsPaid called with invoiceId: {invoiceId}");
+            try
+            {
+                var result = await _invoiceRepository.MarkInvoiceAsPaidAsync(invoiceId);
+                if (result)
+                {
+                    return Json(new { success = true, message = "Invoice marked as paid successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invoice not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in MarkAsPaid: {ex.Message}");
+                return Json(new { success = false, message = "An error occurred while marking the invoice as paid." });
             }
         }
     }

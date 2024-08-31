@@ -43,11 +43,11 @@
             <thead>
                 <tr>
                     <th class="text-center" style="width:10px">#</th>
-                    <th class="text-center" style="width:10px">Name</th>
-                    <th class="text-center" style="width:10px">Rego #</th>
+                    <th class="text-center" style="width:150px">Rego #</th>
+                    <th class="text-center" style="width:150px">Issue</th>
                     <th class="text-center" style="width:10px">Due Date</th>
-                    <th class="text-center" style="width:10px">Amount</th>
-                    <th class="text-center" style="width:10px">Status</th>
+                    <th class="text-center" style="width:100px">Amount</th>
+                    <th class="text-center" style="width:170px">Status</th>
                     <th class="text-center" style="width:10px"></th>
                 </tr>
             </thead>
@@ -56,8 +56,8 @@
                 {
                     <tr>
                         <td class="text-center">@invoice.InvoiceId</td>
-                        <td class="text-center">@invoice.CustomerName</td>
                         <td class="text-center">@invoice.CarRego</td>
+                        <td class="text-center">@invoice.IssueName</td>
                         <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
                         <td class="text-center">@invoice.TotalAmount</td>
                         <td class="text-center payment-status-column"><p class="payment-status-bar">@(invoice.isPaid == true ? "Paid" : "Not Paid")</p></td>

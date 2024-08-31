@@ -2,6 +2,7 @@
 using Mekaniko_Secured.Models;
 using Mekaniko_Secured.Models.Dto;
 using Mekaniko_Secured.Repository.IRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mekaniko_Secured.Repository
@@ -160,13 +161,27 @@ namespace Mekaniko_Secured.Repository
                 .Select(i => new UnpaidInvoiceListDto
                 {
                     InvoiceId = i.InvoiceId,
-                    CustomerName = i.Car.Customer.CustomerName,
+                    IssueName = i.IssueName,
                     CarRego = i.Car.CarRego,
-                    DateAdded = i.DateAdded,
                     DueDate = i.DueDate,
                     TotalAmount = i.TotalAmount,
                     isPaid = i.IsPaid
                 }).ToListAsync();
+        }
+
+        public async Task<bool> MarkInvoiceAsPaidAsync(int invoiceId)
+        {
+            var invoice = await _data.Invoices.FindAsync(invoiceId);
+            if (invoice == null)
+            {
+                return false;
+            }
+
+            invoice.AmountPaid = invoice.TotalAmount;
+            invoice.IsPaid = true;
+
+            await _data.SaveChangesAsync();
+            return true;
         }
     }
 }

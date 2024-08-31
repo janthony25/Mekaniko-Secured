@@ -35,7 +35,12 @@ namespace Mekaniko_Secured.Controllers
             var remainingBalance = await _invoiceRepository.GetRemainingBalanceAsync();
 
             // List of Unpaid Invoices
-            var unpaidInvoices = await _invoiceRepository.GetUnpaidInvoicesAsync();
+            //var unpaidInvoices = await _invoiceRepository.GetUnpaidInvoicesAsync();
+            var unpaidInvoices = (await _invoiceRepository.GetUnpaidInvoicesAsync())
+                            .Where(i => i.DueDate.HasValue) // Ensure we are not dealing with null due dates
+                            .OrderBy(i => i.DueDate)
+                            .Take(5)
+                            .ToList();
 
             // Create a view model to hold dashboard datas 
             var dashBoardDto = new DashboardDataDto

@@ -4,6 +4,10 @@ let itemIndex = 0;
 $(document).ready(function () {
     console.log('Document ready');
 
+    // Ensure these values are defined before you use them
+    var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+    var markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
+
     // Event listener for the "Add Invoice" button
     $('.btn-warning').click(function () {
         console.log('Add Invoice button clicked');
@@ -31,8 +35,54 @@ $(document).ready(function () {
     // Event listeners for PDF actions
     $(document).on('click', '.view-pdf', viewPdf);
     $(document).on('click', '.download-pdf', downloadPdf);
+
+    // Event listener for sending emails
+    $(document).on('click', '.send-invoice-email', sendInvoiceEmail);
+
+    // Mark as Paid functionality
+    $(document).on('click', '.mark-as-paid', function (e) {
+        e.preventDefault();
+        console.log("Mark as paid clicked");
+
+        var invoiceId = $(this).data('invoice-id');
+        console.log("Invoice ID:", invoiceId);
+
+        // Confirm and mark as paid
+        if (confirm("Are you sure you want to mark this invoice as paid?")) {
+            markInvoiceAsPaid(invoiceId);
+        }
+    });
+
+    // Function to handle marking an invoice as paid via AJAX
+    function markInvoiceAsPaid(invoiceId) {
+        console.log("Sending AJAX request to mark invoice as paid");
+
+        $.ajax({
+            url: markAsPaidUrl,
+            type: 'POST',
+            data: { invoiceId: invoiceId }, // Pass as form data
+            headers: {
+                'RequestVerificationToken': csrfToken
+            },
+            success: function (response) {
+                console.log("AJAX response received:", response);
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                console.error('Response text:', xhr.responseText);
+                alert('An error occurred while marking the invoice as paid.');
+            }
+        });
+    }
 });
 
+// Function to populate customer details when adding an invoice
 function populateCustomerDetails() {
     console.log('Populating customer details');
     var customerName = $('input[name="[0].CustomerName"]').val();
@@ -46,6 +96,7 @@ function populateCustomerDetails() {
     console.log('Customer details populated:', { name: customerName, rego: carRego, model: carModel, year: carYear });
 }
 
+// Function to add a new invoice item to the form
 function addInvoiceItem() {
     console.log('Adding new invoice item');
     const itemHtml = `
@@ -73,6 +124,7 @@ function addInvoiceItem() {
     calculateTotals();
 }
 
+// Function to calculate totals for the invoice based on input values
 function calculateTotals() {
     let subTotal = 0;
     $('.invoice-item').each(function () {
@@ -95,6 +147,7 @@ function calculateTotals() {
     $('#IsPaid').val(isPaid);
 }
 
+// Function to validate the form before submission
 function validateForm() {
     let isValid = true;
     $('.error-message').remove();
@@ -115,6 +168,7 @@ function validateForm() {
     return isValid;
 }
 
+// Helper function to check if a date is valid
 function isValidDate(dateString) {
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateString.match(regEx)) return false;
@@ -124,6 +178,7 @@ function isValidDate(dateString) {
     return d.toISOString().slice(0, 10) === dateString;
 }
 
+// Function to submit the invoice form data via AJAX
 function submitInvoice() {
     const invoiceData = {
         CarId: parseInt($('#CarId').val()),
@@ -150,6 +205,8 @@ function submitInvoice() {
         });
     });
     console.log('Submitting invoice data:', invoiceData);
+
+    // AJAX request to submit invoice data to the server
     $.ajax({
         url: addInvoiceUrl,
         type: 'POST',
@@ -184,6 +241,7 @@ function submitInvoice() {
     });
 }
 
+// Function to clear the invoice form after submission or cancellation
 function clearInvoiceForm() {
     console.log('Clearing invoice form');
     $('#invoiceForm')[0].reset();
@@ -197,6 +255,7 @@ function clearInvoiceForm() {
     populateCustomerDetails();
 }
 
+// Function to view a PDF of the invoice in a modal
 function viewPdf(e) {
     e.preventDefault();
     console.log('View PDF button clicked');
@@ -214,6 +273,7 @@ function viewPdf(e) {
     console.log('Modal should be shown now');
 }
 
+// Function to download a PDF of the invoice
 function downloadPdf(e) {
     e.preventDefault();
     var invoiceId = $(this).data('invoice-id');
@@ -221,25 +281,19 @@ function downloadPdf(e) {
     window.location.href = downloadUrl;
 }
 
-function formatDate(dateString) {
-    if (!dateString) return 'N/A';
-    var date = new Date(dateString);
-    return date.toLocaleDateString();
-}
-
-
-// Add this to your existing document.ready function
-$(document).on('click', '.send-invoice-email', function (e) {
+// Function to send an invoice email via AJAX
+function sendInvoiceEmail(e) {
     e.preventDefault();
     var invoiceId = $(this).data('invoice-id');
     console.log('Sending email for invoice ID:', invoiceId);
 
+    // AJAX request to send the invoice email
     $.ajax({
         url: '/Invoice/SendInvoiceEmail',
         type: 'POST',
         data: { invoiceId: invoiceId },
         headers: {
-            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            'RequestVerificationToken': csrfToken
         },
         success: function (response) {
             if (response.success) {
@@ -253,4 +307,4 @@ $(document).on('click', '.send-invoice-email', function (e) {
             alert('An error occurred while sending the email. Please try again.');
         }
     });
-});
+}
