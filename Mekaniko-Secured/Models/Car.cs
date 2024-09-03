@@ -20,5 +20,9 @@ namespace Mekaniko_Secured.Models
 
         // 1-to-M Car-Invoice
         public ICollection<Invoice> Invoice { get; set; }
+
+        // 1-to-M Car-Quotation
+        public ICollection<Quotation> Quotation { get; set; }
+
     }
 }

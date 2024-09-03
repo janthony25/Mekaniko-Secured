@@ -50,6 +50,8 @@ builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IQuotationRepository, QuotationRepository>();
+
 // Add email service
 builder.Services.AddScoped<IEmailService, EmailService>();
 

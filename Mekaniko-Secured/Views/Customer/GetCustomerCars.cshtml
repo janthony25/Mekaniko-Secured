@@ -62,8 +62,9 @@
                 <td>@car.CarPaymentStatus</td>
                 <td>
                     <div>
-                        <a asp-controller="Car" asp-action="GetCarInvoice" asp-route-id="@car.CarId"><i class="bi bi-pencil-square"></i></a>
-                        <a href="#" class="delete-car-btn" data-id="@car.CarId" data-rego="@car.CarRego" data-model="@car.CarModel" data-year="@car.CarYear">
+                        <a asp-controller="Car" asp-action="GetCarInvoice" asp-route-id="@car.CarId"> Invoice</a>
+                        <a asp-controller="Quotation" asp-action="GetCarQuotation" asp-route-id="@car.CarId"> Quote</a>
+                        <a href="#" class="delete-car-btn ms-3" data-id="@car.CarId" data-rego="@car.CarRego" data-model="@car.CarModel" data-year="@car.CarYear">
                             <i class="bi bi-trash3-fill"></i>
                         </a>
                     </div>

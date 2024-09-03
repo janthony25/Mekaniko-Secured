@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mekaniko_Secured.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240831212621_Add IsEmailSent to Invoice")]
-    partial class AddIsEmailSenttoInvoice
+    [Migration("20240902103535_SyncDatabase")]
+    partial class SyncDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,7 +236,7 @@ namespace Mekaniko_Secured.Migrations
                         new
                         {
                             Id = 1,
-                            PasswordHash = "$2a$11$Bce.jiJRbGMd36cOXJ5XruzbVWarlJGdalRr6fF0z0oaY.JHJkQVe",
+                            PasswordHash = "$2a$11$hLr8plYsf/NpuUyeXobr1e3d.3pZjtdUsDA./lGLk4bHiZdtL2h.C",
                             Role = "Admin",
                             Username = "admin"
                         });

@@ -1,0 +1,90 @@
+﻿<!-- Modal for Adding New Quotation -->
+<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="addQuotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuotationModalLabel">Add New Quotation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearQuotationForm()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quotationForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="CarId" name="CarId" value="@Model[0].CarId" />
+
+                    <div class="customer-car-details d-flex justify-content-between align-items-center container">
+                        <!-- Customer and Car details (readonly) -->
+                        <div class="left">
+                            <div class="group">
+                                <label for="CustomerName">Customer Name</label>
+                                <input type="text" id="CustomerName" class="form-control" value="@Model[0].CustomerName" readonly />
+                            </div>
+                            <!-- Add other customer details as needed -->
+                        </div>
+                        <div class="right">
+                            <div class="group">
+                                <label for="CarRego">Car Rego</label>
+                                <input type="text" id="CarRego" class="form-control" value="@Model[0].CarRego" readonly />
+                            </div>
+                            <!-- Add other car details as needed -->
+                        </div>
+                    </div>
+
+                    <div class="quotation-item-container container mt-4">
+                        <h4 class="heading-title">ITEM LIST</h4>
+                        <div id="quotationItems" class="quotation-items-container flex-column d-flex mt-2">
+                            <!-- Quotation items will be added here dynamically -->
+                        </div>
+                        <button type="button" id="addItemButton" class="btn btn-primary mt-3">Add Item</button>
+                    </div>
+
+                    <div class="quotation-details d-flex justify-content-between align-items-center container mt-5">
+                        <div class="left">
+                            <div class="group">
+                                <label for="DateAdded">Date Added</label>
+                                <input type="date" id="DateAdded" name="DateAdded" class="form-control" />
+                            </div>
+                            <div class="group">
+                                <label for="IssueName">Issue Name</label>
+                                <input type="text" id="IssueName" name="IssueName" class="form-control" required />
+                            </div>
+                            <div class="group">
+                                <label for="Notes">Notes</label>
+                                <textarea id="Notes" name="Notes" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="right d-flex justify-content-between align-items-center">
+                            <div class="right-left">
+                                <div class="group">
+                                    <label for="LaborPrice">Labor Price</label>
+                                    <input type="number" id="LaborPrice" name="LaborPrice" class="form-control calc-input" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="Discount">Discount</label>
+                                    <input type="number" id="Discount" name="Discount" class="form-control calc-input" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="ShippingFee">Shipping Fee</label>
+                                    <input type="number" id="ShippingFee" name="ShippingFee" class="form-control calc-input" step="0.01" />
+                                </div>
+                                <div class="group">
+                                    <label for="SubTotal">Sub Total</label>
+                                    <input type="number" id="SubTotal" name="SubTotal" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="right-right ms-5">
+                                <div class="group">
+                                    <label for="TotalAmount">Total Amount</label>
+                                    <input type="number" id="TotalAmount" name="TotalAmount" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearQuotationForm()">Close</button>
+                <button type="button" class="btn btn-primary" id="saveQuotationBtn">Save Quotation</button>
+            </div>
+        </div>
+    </div>
+</div>

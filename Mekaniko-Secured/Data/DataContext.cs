@@ -17,6 +17,8 @@ namespace Mekaniko_Secured.Data
         public DbSet<CarMake> CarMakes { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
+        public DbSet<Quotation> Quotations { get; set; }
+        public DbSet<QuotationItem> QuotationItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +71,21 @@ namespace Mekaniko_Secured.Data
                 .WithOne(ii => ii.Invoice)
                 .HasForeignKey(ii => ii.InvoiceId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // 1-to-M Car-Quotation
+            modelBuilder.Entity<Car>()
+                .HasMany(car => car.Quotation)
+                .WithOne(q => q.Car)
+                .HasForeignKey(q => q.CarId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 1-to-M Quotation-QuotationItem
+            modelBuilder.Entity<Quotation>()
+                .HasMany(q => q.QuotationItem)
+                .WithOne(qi => qi.Quotation)
+                .HasForeignKey(qi => qi.QuotationId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
 
         }
 
