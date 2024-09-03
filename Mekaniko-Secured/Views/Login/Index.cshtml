@@ -1,17 +1,39 @@
 ﻿@model Mekaniko_Secured.Models.Dto.LoginDto
 
-<h2>Login</h2>
+@* <h2>Login</h2> *@
 
-<form asp-controller="Login" asp-action="Index" method="post">
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <button type="submit">Login</button>
-</form>
+<body class="login-body">
+
+
+<div class="login-section">
+    <div class="login-container d-flex align-items-center">
+        <div class="login-image">
+            <img src="/Images/car-photo.jpg" alt="" />
+        </div>
+        <div class="login-form ">
+            <h1>Mobile <span>Mekaniko</span></h1>
+            <!-- <p>Sign In</p> -->
+                <div class="user-form">
+                    <form asp-controller="Login" asp-action="Index" method="post">
+                        <div class="form-group">
+                            <label asp-for="Username"></label><br />
+                            <input asp-for="Username" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password"></label><br />
+                            <input asp-for="Password"  type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn fw-bold mt-3" type="submit">Login</button>
+                        </div>
+                       
+                    </form>
+                </div>
+        </div>
+    </div>  
+</div>
+
+</body>
+

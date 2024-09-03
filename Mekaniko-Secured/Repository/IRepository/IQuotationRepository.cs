@@ -9,5 +9,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<QuotationDetailsDto> GetQuotationDetailsAsync(int id);
         Task<bool> MarkEmailSentAsync(int id);
         Task<int> GetTotalQuotationCountAsync();
+        Task<List<QuotationListDto>> GetQuotationListAsync();
     }
 }

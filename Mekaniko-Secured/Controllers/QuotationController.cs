@@ -87,6 +87,7 @@ namespace Mekaniko_Secured.Controllers
             }
         }
 
+        // POST: Send PDF to Email
         [HttpPost]
         [Authorize (Policy = "Admin")]
         [ValidateAntiForgeryToken]
@@ -140,5 +141,13 @@ namespace Mekaniko_Secured.Controllers
             }
         }
 
+
+        // GET: Quotation List
+        [Authorize (Policy = "Admin")]
+        public async Task<IActionResult> GetQuotationList()
+        {
+            var quotation = await _quotationRepository.GetQuotationListAsync();
+            return View(quotation);
+        }
     }
 }

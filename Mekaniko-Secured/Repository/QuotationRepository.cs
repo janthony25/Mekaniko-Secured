@@ -134,6 +134,27 @@ namespace Mekaniko_Secured.Repository
                 }).FirstOrDefaultAsync();
         }
 
+        public async Task<List<QuotationListDto>> GetQuotationListAsync()
+        {
+            return await _data.Quotations
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.Customer)
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.CarMake)
+                        .ThenInclude(cm => cm.Make)
+                .Select(q => new QuotationListDto
+                {
+                    QuotationId = q.QuotationId,
+                    CustomerName = q.Car.Customer.CustomerName,
+                    CarId = q.Car.CarId,
+                    CarRego = q.Car.CarRego,
+                    IssueName = q.IssueName,
+                    DateAdded = q.DateAdded,
+                    TotalAmount = q.TotalAmount,
+                    IsEmailSent = q.IsEmailSent
+                }).ToListAsync();
+        }
+
         public async Task<int> GetTotalQuotationCountAsync()
         {
             return await _data.Quotations.CountAsync();
