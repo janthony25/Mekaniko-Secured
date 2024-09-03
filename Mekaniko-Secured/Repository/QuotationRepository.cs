@@ -94,5 +94,44 @@ namespace Mekaniko_Secured.Repository
                     TotalAmount = Quotation.TotalAmount
                 }).ToListAsync();
         }
+
+        public async Task<QuotationDetailsDto> GetQuotationDetailsAsync(int id)
+        {
+            return await _data.Quotations
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.CarMake)
+                        .ThenInclude(cm => cm.Make)
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.Customer)
+                .Include(q => q.QuotationItem)
+                .Where(q => q.QuotationId == id)
+                .Select(q => new QuotationDetailsDto
+                {
+                    QuotationId = q.QuotationId,
+                    CustomerName = q.Car.Customer.CustomerName,
+                    CustomerEmail = q.Car.Customer.CustomerEmail,
+                    CustomerNumber = q.Car.Customer.CustomerNumber,
+                    CarId = q.Car.CarId,
+                    CarRego = q.Car.CarRego,
+                    MakeName = q.Car.CarMake.Select(cm => cm.Make.MakeName).FirstOrDefault(),
+                    CarModel = q.Car.CarModel,
+                    CarYear = q.Car.CarYear,
+                    IssueName = q.IssueName,
+                    Notes = q.Notes,
+                    LaborPrice = q.LaborPrice,
+                    Discount = q.Discount,
+                    ShippingFee = q.ShippingFee,
+                    SubTotal = q.SubTotal,
+                    TotalAmount = q.TotalAmount,
+                    QuotationItems = q.QuotationItem.Select(item => new QuotationItemDetailsDto
+                    {
+                        QuotationItemId = item.QuotationId,
+                        ItemName = item.ItemName,
+                        Quantity = item.Quantity,
+                        ItemPrice = item.ItemPrice,
+                        ItemTotal = item.ItemTotal
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+        }
     }
 }

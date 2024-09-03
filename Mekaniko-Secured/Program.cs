@@ -45,6 +45,7 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(
 // Register application services for dependency injection
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+builder.Services.AddScoped<IQuotationPdfService, QuotationPdfService>();
 
 // Repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

@@ -1,7 +1,9 @@
 ﻿using Mekaniko_Secured.Models.Dto;
 using Mekaniko_Secured.Repository.IRepository;
+using Mekaniko_Secured.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MigraDoc.Rendering;
 using System.Reflection.Emit;
 
 namespace Mekaniko_Secured.Controllers
@@ -10,10 +12,12 @@ namespace Mekaniko_Secured.Controllers
     {
         private readonly IQuotationRepository _quotationRepository;
         private readonly ILogger<QuotationController> _logger;
-        public QuotationController(IQuotationRepository quotationRepository, ILogger<QuotationController> logger)
+        private readonly IQuotationPdfService _quotationPdfService;
+        public QuotationController(IQuotationRepository quotationRepository, ILogger<QuotationController> logger, IQuotationPdfService quotationPdfService)
         {
             _quotationRepository = quotationRepository;
             _logger = logger;
+            _quotationPdfService = quotationPdfService;
         }
 
         // GET: Quotation summary
@@ -51,5 +55,35 @@ namespace Mekaniko_Secured.Controllers
                 return Json(new { success = false, message = $"An error occurred while adding quotation: {ex.Message}" });
             }
         }
+
+        // GENERATE PDF
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> GeneratePdf(int id, bool download = false)
+        {
+            var quotation = await _quotationRepository.GetQuotationDetailsAsync(id);
+            if (quotation == null)
+            {
+                return NotFound();
+            }
+
+            var document = _quotationPdfService.CreateQuotationPdf(quotation);
+
+            var renderer = new PdfDocumentRenderer(true);
+            renderer.Document = document;
+            renderer.RenderDocument();
+
+            using (var stream = new MemoryStream())
+            {
+                renderer.PdfDocument.Save(stream, false);
+                stream.Position = 0;
+                byte[] pdfBytes = stream.ToArray();
+
+                var contentDisposition = download ? "attachment" : "inline";
+                Response.Headers.Add("Content-Disposition", $"{contentDisposition}; filename=Quotation_{id}.pdf");
+
+                return File(pdfBytes, "application/pdf");
+            }
+        }
+
     }
 }
