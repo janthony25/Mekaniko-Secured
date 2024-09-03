@@ -30,6 +30,7 @@ namespace Mekaniko_Secured.Controllers
             return View(carQuotation);
         }
 
+        // POST: Add Quotation
         [HttpPost]
         [Authorize(Policy = "Admin")]
         [ValidateAntiForgeryToken]

@@ -1,13 +1,16 @@
 ﻿// Declare variables that will be set in the view
 var csrfToken;
+var addQuotationUrl;
 var viewPdfUrl;
 var sendQuotationEmailUrl;
 
 // Function to initialize variables
-function initializeVariables(token, viewPdf, sendEmailUrl) {
+function initializeVariables(token, addUrl, viewPdf, sendEmailUrl) {
     csrfToken = token;
+    addQuotationUrl = addUrl;
     viewPdfUrl = viewPdf;
     sendQuotationEmailUrl = sendEmailUrl;
+    console.log("Variables initialized:", { addQuotationUrl, viewPdfUrl, sendQuotationEmailUrl });
 }
 
 // Global variable to keep track of the number of quotation items
@@ -41,12 +44,13 @@ $(document).ready(function () {
     // Event listener for viewing PDF
     $(document).on('click', '.view-pdf', viewPdf);
 
+    // Event listener for downloading PDF
+    $(document).on('click', '.download-pdf', downloadPdf);
+
     // Event listener for sending quotation email
     $(document).on('click', '.send-quotation-email', function (e) {
         e.preventDefault();
-        console.log('Send Email button clicked');
         var quotationId = $(this).data('quotation-id');
-        console.log('Quotation ID:', quotationId);
         sendQuotationEmail(quotationId);
     });
 
@@ -55,17 +59,15 @@ $(document).ready(function () {
     $('#LaborPrice, #Discount, #ShippingFee').on('input', calculateTotals);
 });
 
-// Function to populate customer details when adding a quotation
 function populateCustomerDetails() {
     console.log('Populating customer details');
-    var customerName = $('input[name="[0].CustomerName"]').val();
-    var carRego = $('input[name="[0].CarRego"]').val();
+    var customerName = $('p:contains("Customer Name:")').find('.fw-bold').text().trim();
+    var carRego = $('p:contains("Car Rego:")').find('.fw-bold').text().trim();
     $('#CustomerName').val(customerName);
     $('#CarRego').val(carRego);
     console.log('Customer details populated:', { name: customerName, rego: carRego });
 }
 
-// Function to add a new quotation item to the form
 function addQuotationItem() {
     console.log('Adding new quotation item');
     const itemHtml = `
@@ -93,7 +95,6 @@ function addQuotationItem() {
     calculateTotals();
 }
 
-// Function to calculate totals for the quotation based on input values
 function calculateTotals() {
     console.log('Calculating totals');
     let subTotal = 0;
@@ -114,7 +115,6 @@ function calculateTotals() {
     console.log('Totals calculated:', { subTotal, totalAmount });
 }
 
-// Function to validate the form before submission
 function validateForm() {
     console.log('Validating form');
     let isValid = true;
@@ -133,7 +133,6 @@ function validateForm() {
     return isValid;
 }
 
-// Helper function to check if a date is valid
 function isValidDate(dateString) {
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateString.match(regEx)) return false;
@@ -143,7 +142,6 @@ function isValidDate(dateString) {
     return d.toISOString().slice(0, 10) === dateString;
 }
 
-// Function to submit the quotation form data via AJAX
 function submitQuotation() {
     console.log('Submitting quotation');
     const quotationData = {
@@ -168,9 +166,8 @@ function submitQuotation() {
     });
     console.log('Submitting quotation data:', quotationData);
 
-    // AJAX request to submit quotation data to the server
     $.ajax({
-        url: addQuotationUrl,  // Ensure this URL is set correctly in the cshtml file
+        url: addQuotationUrl,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(quotationData),
@@ -204,11 +201,10 @@ function submitQuotation() {
     });
 }
 
-// Function to view the PDF in an iframe modal
 function viewPdf(e) {
     e.preventDefault();
     console.log('View PDF button clicked');
-    var quotationId = $(this).data('invoice-id');
+    var quotationId = $(this).data('quotation-id');
     console.log('Quotation ID:', quotationId);
     if (!quotationId) {
         console.error('No quotation ID found');
@@ -217,15 +213,28 @@ function viewPdf(e) {
     var url = viewPdfUrl + '?id=' + quotationId;
     console.log('View URL:', url);
 
-    // Set the iframe src and show the modal
     $('#pdfViewerFrame').attr('src', url);
     $('#pdfViewerModal').modal('show');
 }
 
-// Function to send the quotation email
+function downloadPdf(e) {
+    e.preventDefault();
+    console.log('Download PDF button clicked');
+    var quotationId = $(this).data('quotation-id');
+    console.log('Quotation ID:', quotationId);
+    if (!quotationId) {
+        console.error('No quotation ID found');
+        return;
+    }
+    var downloadUrl = viewPdfUrl + '?id=' + quotationId + '&download=true';
+    console.log('Download URL:', downloadUrl);
+    window.location.href = downloadUrl;
+}
+
 function sendQuotationEmail(quotationId) {
+    console.log('Sending email for quotation ID:', quotationId);
     $.ajax({
-        url: sendQuotationEmailUrl,  // Ensure this URL is set correctly in the cshtml file
+        url: sendQuotationEmailUrl,
         type: 'POST',
         data: { quotationId: quotationId },
         headers: {
@@ -243,4 +252,17 @@ function sendQuotationEmail(quotationId) {
             alert('An error occurred while sending the email. Please try again.');
         }
     });
+}
+
+function clearQuotationForm() {
+    console.log('Clearing quotation form');
+    $('#quotationForm')[0].reset();
+    $('#quotationItems').empty();
+    itemIndex = 0;
+    $('#SubTotal, #TotalAmount').val('');
+    $('.error-message').remove();
+    $('#DateAdded, #IssueName, #Notes, #LaborPrice, #Discount, #ShippingFee').val('');
+    $('.quotation-item').remove();
+    console.log('Quotation form cleared');
+    populateCustomerDetails();
 }

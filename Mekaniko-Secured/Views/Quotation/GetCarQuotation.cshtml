@@ -61,12 +61,14 @@
                         </li> *@
                            
                             <li>
-                                <button class="dropdown-item view-pdf" data-invoice-id="@quote.QuotationId"><i class="bi bi-file-pdf"></i> View PDF</button>
+                                <button class="dropdown-item view-pdf" data-quotation-id="@quote.QuotationId">
+                                    <i class="bi bi-file-pdf"></i> View PDF
+                                </button>
                             </li>
                             <li>
-                                <a href="@Url.Action("GeneratePdf", "Quotation", new { id = quote.QuotationId, download = true })" class="dropdown-item download-pdf">
+                                <button class="dropdown-item download-pdf" data-quotation-id="@quote.QuotationId">
                                     <i class="bi bi-download"></i> Download PDF
-                                </a>
+                                </button>
                             </li>
                             <li>
                                 <a href="#" class="dropdown-item send-quotation-email" data-quotation-id="@quote.QuotationId">
@@ -92,15 +94,14 @@
 
     <script>
         $(document).ready(function () {
-            // Initialize variables for the JavaScript file
             var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+            var addQuotationUrl = '@Url.Action("AddQuotationToCar", "Quotation")';
             var viewPdfUrl = '@Url.Action("GeneratePdf", "Quotation")';
             var sendQuotationEmailUrl = '@Url.Action("SendQuotationEmail", "Quotation")';
 
-            // Initialize the JavaScript file with the necessary variables
-            initializeVariables(csrfToken, viewPdfUrl, sendQuotationEmailUrl);
-        });
+            initializeVariables(csrfToken, addQuotationUrl, viewPdfUrl, sendQuotationEmailUrl);
+                });
     </script>
 
-    <script src="~/js/carQuotation.js"></script> <!-- Reference to your external JS file -->
+    <script src="~/js/carQuotation.js"></script>
 }
