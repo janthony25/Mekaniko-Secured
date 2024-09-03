@@ -103,8 +103,12 @@
 
 <!-- Store the CSRF token and URLs as data attributes on a global element -->
 <div id="scriptData"
-     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")">
+     data-add-invoice-url="@Url.Action("AddInvoiceToCar", "Invoice")"
+     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")"
+     data-view-pdf-url="@Url.Action("GeneratePdf", "Invoice")"
+     data-send-invoice-email-url="@Url.Action("SendInvoiceEmail", "Invoice")">
 </div>
+
 @*Render the partial view for modals*@
 @Html.Partial("_CarInvoiceModals")
 
