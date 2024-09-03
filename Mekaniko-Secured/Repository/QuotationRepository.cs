@@ -134,6 +134,11 @@ namespace Mekaniko_Secured.Repository
                 }).FirstOrDefaultAsync();
         }
 
+        public async Task<int> GetTotalQuotationCountAsync()
+        {
+            return await _data.Quotations.CountAsync();
+        }
+
         public async Task<bool> MarkEmailSentAsync(int id)
         {
             var quotation = await _data.Quotations.FindAsync(id);

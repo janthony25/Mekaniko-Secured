@@ -4,44 +4,17 @@
 
 <div class="customer-car-details d-flex justify-content-between align-items-center container mt-3">
     <div class="left">
-        <div class="group">
-            <label asp-for="@Model[0].CustomerId"></label>
-            <input asp-for="@Model[0].CustomerId" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CustomerName"></label>
-            <input asp-for="@Model[0].CustomerName" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CustomerEmail"></label>
-            <input asp-for="@Model[0].CustomerEmail" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CustomerNumber"></label>
-            <input asp-for="@Model[0].CustomerNumber" readonly />
-        </div>
+       <p>Customer ID: <span class="fw-bold">@Model[0].CustomerId</span></p>
+        <p>Customer Name: <span class="fw-bold">@Model[0].CustomerName</span></p>
+        <p>Email Address: <span class="fw-bold">@Model[0].CustomerEmail</span></p>
+        <p>Contact #: <span class="fw-bold">@Model[0].CustomerNumber</span></p>
     </div>
     <div class="right">
-        <div class="group">
-            <label asp-for="@Model[0].CarId"></label>
-            <input asp-for="@Model[0].CarId" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CarRego"></label>
-            <input asp-for="@Model[0].CarRego" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].MakeName"></label>
-            <input asp-for="@Model[0].MakeName" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CarModel"></label>
-            <input asp-for="@Model[0].CarModel" readonly />
-        </div>
-        <div class="group">
-            <label asp-for="@Model[0].CarYear"></label>
-            <input asp-for="@Model[0].CarYear" readonly />
-        </div>
+       <p>Car ID: <span class="fw-bold">@Model[0].CarId</span></p>
+        <p>Car Rego: <span class="fw-bold">@Model[0].CarRego</span></p>
+        <p>Car Make: <span class="fw-bold">@Model[0].MakeName</span></p>
+        <p>Car Model: <span class="fw-bold">@Model[0].CarModel</span></p>
+        <p>Car Year: <span class="fw-bold">@Model[0].CarYear</span></p>
        
     </div>
 </div> 
@@ -56,7 +29,7 @@
     </div>
 </div>
 
-<input id="ViewQuotationId"  />
+@* <input id="ViewQuotationId"  /> *@
 <table class="table table-striped">
     <thead>
         <tr>

@@ -5,8 +5,12 @@
 }
 
 <h2>Customer Details</h2>
-<div class="customer-details">
-    <div class="group">
+<div class="customer-details mt-5">
+    <p>Customer ID: <span class="fw-bold">@Model.CustomerId</span></p>
+    <p>Customer Name: <span class="fw-bold">@Model.CustomerName</span></p>
+    <p>Email Address: <span class="fw-bold">@Model.CustomerEmail</span></p>
+    <p>Contact #: <span class="fw-bold">@Model.CustomerNumber</span></p>
+  @*   <div class="group">
         <label asp-for="CustomerId"></label><br />
         <input asp-for="CustomerId" readonly />
     </div>
@@ -21,7 +25,7 @@
     <div class="group">
         <label asp-for="CustomerNumber"></label><br />
         <input asp-for="CustomerNumber" readonly />
-    </div>
+    </div> *@
 </div>
 
 <div class="d-flex justify-content-between align-items-center container mt-5">
@@ -36,35 +40,35 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Car ID</th>
-            <th>Rego #</th>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Year</th>
-            <th>Status</th>
-            <th></th>
+            <th class="text-center">Car ID</th>
+            <th class="text-center">Rego #</th>
+            <th class="text-center">Make</th>
+            <th class="text-center">Model</th>
+            <th class="text-center">Year</th>
+            <th class="text-center">Status</th>
+            <th class="text-center" style="width: 230px;">Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var car in Model.Car)
         {
             <tr>
-                <td>@car.CarId</td>
-                <td>@car.CarRego</td>
-                <td>
+                <td class="text-center">@car.CarId</td>
+                <td class="text-center">@car.CarRego</td>
+                <td class="text-center">
                     @foreach (var name in car.Make)
                     {
                         <span>@name.MakeName</span>
                     }
                 </td>
-                <td>@car.CarModel</td>
-                <td>@car.CarYear</td>
-                <td>@car.CarPaymentStatus</td>
-                <td>
+                <td class="text-center">@car.CarModel</td>
+                <td class="text-center">@car.CarYear</td>
+                <td class="text-center">@car.CarPaymentStatus</td>
+                <td class="text-center">
                     <div>
-                        <a asp-controller="Car" asp-action="GetCarInvoice" asp-route-id="@car.CarId"> Invoice</a>
-                        <a asp-controller="Quotation" asp-action="GetCarQuotation" asp-route-id="@car.CarId"> Quote</a>
-                        <a href="#" class="delete-car-btn ms-3" data-id="@car.CarId" data-rego="@car.CarRego" data-model="@car.CarModel" data-year="@car.CarYear">
+                        <a class="btn btn-sm btn-primary" asp-controller="Car" asp-action="GetCarInvoice" asp-route-id="@car.CarId"><i class="bi bi-receipt-cutoff"></i> Invoice</a>
+                        <a class="btn btn-sm btn-secondary ms-2" asp-controller="Quotation" asp-action="GetCarQuotation" asp-route-id="@car.CarId"><i class="bi bi-receipt"></i> Quote</a>
+                        <a href="#" class="btn btn-sm btn-danger  delete-car-btn ms-2" data-id="@car.CarId" data-rego="@car.CarRego" data-model="@car.CarModel" data-year="@car.CarYear">
                             <i class="bi bi-trash3-fill"></i>
                         </a>
                     </div>

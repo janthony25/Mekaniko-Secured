@@ -10,12 +10,14 @@ namespace Mekaniko_Secured.Controllers
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICarRepository _carRepository;
+        private readonly IQuotationRepository _quotationRepository;
 
-        public DashboardController(IInvoiceRepository invoiceRepository, ICustomerRepository customerRepository, ICarRepository carRepository)
+        public DashboardController(IInvoiceRepository invoiceRepository, ICustomerRepository customerRepository, ICarRepository carRepository, IQuotationRepository quotationRepository)
         {
             _invoiceRepository = invoiceRepository;
             _customerRepository = customerRepository;
             _carRepository = carRepository;
+            _quotationRepository = quotationRepository;
         }
 
         public ICustomerRepository CustomerRepository { get; }
@@ -33,6 +35,7 @@ namespace Mekaniko_Secured.Controllers
             var totalCars = await _carRepository.GetTotalCarCountAsync();
             var totalInvoices = await _invoiceRepository.GetTotalInvoiceCountAsync();
             var remainingBalance = await _invoiceRepository.GetRemainingBalanceAsync();
+            var totalQuotations = await _quotationRepository.GetTotalQuotationCountAsync();
 
             // List of Unpaid Invoices
             //var unpaidInvoices = await _invoiceRepository.GetUnpaidInvoicesAsync();
@@ -51,7 +54,8 @@ namespace Mekaniko_Secured.Controllers
                 TotalInvoices = totalInvoices,
                 TotalPaidAmount = totalPaidAmount,
                 RemainingBalance = remainingBalance,
-                UnpaidInvoices = unpaidInvoices
+                UnpaidInvoices = unpaidInvoices,
+                TotalQuotations = totalQuotations
             };
 
             return View(dashBoardDto);

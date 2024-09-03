@@ -8,5 +8,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task AddCarQuotationAsync(AddCarQuotationDto dto);
         Task<QuotationDetailsDto> GetQuotationDetailsAsync(int id);
         Task<bool> MarkEmailSentAsync(int id);
+        Task<int> GetTotalQuotationCountAsync();
     }
 }

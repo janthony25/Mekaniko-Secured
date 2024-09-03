@@ -11,7 +11,7 @@
 <div class="customer-car-invoice-count d-flex">
     <div class="customer-count-box d-flex justify-content-between align-items-center">
         <div class="customer-count-left">
-            <i class="bi bi-file-person"></i>
+            <i class="bi bi-people-fill"></i>
         </div>
         <div class="customer-count-right">
             <h5>Customers</h5>
@@ -34,6 +34,15 @@
         <div class="invoice-count-right">
             <h5>Invoices</h5>
             <h3>@Model.TotalInvoices</h3>
+        </div>
+    </div>
+    <div class="quotation-count-box d-flex justify-content-between align-items-center">
+        <div class="quotation-count-left">
+            <i class="bi bi-receipt"></i>
+        </div>
+        <div class="quotation-count-right">
+            <h5>Quotations</h5>
+            <h3>@Model.TotalQuotations</h3>
         </div>
     </div>
 </div>

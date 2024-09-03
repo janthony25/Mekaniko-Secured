@@ -52,9 +52,10 @@
 
 .customer-count-box,
 .car-count-box,
-.invoice-count-box {
-    border: 1px solid black;
-    width: 200px;
+.invoice-count-box,
+.quotation-count-box {
+    border: 1px solid rgba(164, 156, 156, 0.8);
+    width: 270px;
     margin-right: 30px;
     padding: 10px;
     border-radius: 7px;
@@ -62,18 +63,40 @@
 
 .customer-count-left i,
 .car-count-left i,
-.invoice-count-left i {
+.invoice-count-left i,
+.quotation-count-left i {
     font-size: 50px;
+    margin-left: 15px
 }
 
+.quotation-count-left i {
+    color: rgba(219, 77, 47, 0.8);
+}
 
+.customer-count-left i {
+    color: rgba(0, 101, 238, 0.75);
+}
 
+.car-count-left i {
+    color: rgba(241, 124, 15, 0.64);
+}
+
+.invoice-count-left i {
+    color: rgba(140, 178, 145, 0.8);
+}
+
+.customer-count-right,
+.car-count-right,
+.invoice-count-right,
+.uotation-count-right {
+    width: 100px
+}
 
 .chart-container {
-    height: 270px; 
+    height: 270px;
     width: 600px;
     position: relative;
-    border: 1px solid black;
+    border: 1px solid rgba(164, 156, 156, 0.8);
     border-radius: 10px;
     padding: 10px;
 }
@@ -103,3 +126,38 @@
     border-radius: 40px;
 }
 
+
+
+/************************ GET CUSTOMER CARS *********************** */
+
+.customer-details {
+    border: 1px solid rgba(164, 156, 156, 0.8);
+    padding: 10px;
+    width: 450px;
+    border-radius: 5px;
+}
+
+.customer-details p {
+    margin-bottom: 2px;
+}
+
+
+/************************ GET CAR INVOICE *********************** */
+
+.customer-car-details .left {
+    border: 1px solid rgba(164, 156, 156, 0.8);
+    padding: 10px;
+    width: 450px;
+    border-radius: 5px;
+}
+
+.customer-car-details .right {
+    border: 1px solid rgba(164, 156, 156, 0.8);
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+}
+
+.customer-car-details p {
+    margin-bottom: 2px;
+}
