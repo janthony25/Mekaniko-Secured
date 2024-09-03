@@ -2,12 +2,12 @@
 
 // Declare variables that will be set in the view
 var csrfToken;
-var addQuotationUrl;
+var viewPdfUrl;
 
 // Function to initialize variables
-function initializeVariables(token, url) {
+function initializeVariables(token, viewPdf) {
     csrfToken = token;
-    addQuotationUrl = url;
+    viewPdfUrl = viewPdf;
 }
 
 // Global variable to keep track of the number of quotation items
@@ -37,6 +37,9 @@ $(document).ready(function () {
             submitQuotation();
         }
     });
+
+    // Event listener for viewing PDF
+    $(document).on('click', '.view-pdf', viewPdf);
 
     // Add event listeners for real-time calculation
     $('#quotationForm').on('input', '.calc-input', calculateTotals);
@@ -204,4 +207,22 @@ function clearQuotationForm() {
     $('.quotation-item').remove();
     console.log('Quotation form cleared');
     populateCustomerDetails();
+}
+
+// Function to view the PDF in an iframe modal
+function viewPdf(e) {
+    e.preventDefault();
+    console.log('View PDF button clicked');
+    var quotationId = $(this).data('invoice-id');
+    console.log('Quotation ID:', quotationId);
+    if (!quotationId) {
+        console.error('No quotation ID found');
+        return;
+    }
+    var url = viewPdfUrl + '?id=' + quotationId;
+    console.log('View URL:', url);
+
+    // Set the iframe src and show the modal
+    $('#pdfViewerFrame').attr('src', url);
+    $('#pdfViewerModal').modal('show');
 }

@@ -122,26 +122,9 @@
         var csrfToken = $('input[name="__RequestVerificationToken"]').val();
         var viewPdfUrl = '@Url.Action("GeneratePdf", "Quotation")';
 
-        $(document).ready(function () {
-            // Event listener for viewing PDF
-            $(document).on('click', '.view-pdf', viewPdf);
-        });
-
-        function viewPdf(e) {
-            e.preventDefault();
-            console.log('View PDF button clicked');
-            var quotationId = $(this).data('invoice-id');
-            console.log('Quotation ID:', quotationId);
-            if (!quotationId) {
-                console.error('No quotation ID found');
-                return;
-            }
-            var url = viewPdfUrl + '?id=' + quotationId;
-            console.log('View URL:', url);
-
-            // Set the iframe src and show the modal
-            $('#pdfViewerFrame').attr('src', url);
-            $('#pdfViewerModal').modal('show');
-        }
+        // Initialize the variables in the external JS file
+        initializeVariables(csrfToken, viewPdfUrl);
     </script>
+
+    <script src="~/js/carQuotation.js"></script>  <!-- External JS file -->
 }
