@@ -91,12 +91,12 @@
                                 <button class="dropdown-item view-pdf" data-invoice-id="@quote.QuotationId"><i class="bi bi-file-pdf"></i> View PDF</button>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item download-pdf" data-invoice-id="@quote.QuotationId">
+                                <a href="@Url.Action("GeneratePdf", "Quotation", new { id = quote.QuotationId, download = true })" class="dropdown-item download-pdf">
                                     <i class="bi bi-download"></i> Download PDF
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item send-invoice-email" data-invoice-id="@quote.QuotationId">
+                                <a href="#" class="dropdown-item send-quotation-email" data-quotation-id="@quote.QuotationId">
                                     <i class="bi bi-envelope-paper"></i> Send Email
                                 </a>
                             </li>
@@ -118,13 +118,16 @@
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
 
     <script>
-        // Provide the CSRF token and URLs to your external script
-        var csrfToken = $('input[name="__RequestVerificationToken"]').val();
-        var viewPdfUrl = '@Url.Action("GeneratePdf", "Quotation")';
+        $(document).ready(function () {
+            // Initialize variables for the JavaScript file
+            var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+            var viewPdfUrl = '@Url.Action("GeneratePdf", "Quotation")';
+            var sendQuotationEmailUrl = '@Url.Action("SendQuotationEmail", "Quotation")';
 
-        // Initialize the variables in the external JS file
-        initializeVariables(csrfToken, viewPdfUrl);
+            // Initialize the JavaScript file with the necessary variables
+            initializeVariables(csrfToken, viewPdfUrl, sendQuotationEmailUrl);
+        });
     </script>
 
-    <script src="~/js/carQuotation.js"></script>  <!-- External JS file -->
+    <script src="~/js/carQuotation.js"></script> <!-- Reference to your external JS file -->
 }

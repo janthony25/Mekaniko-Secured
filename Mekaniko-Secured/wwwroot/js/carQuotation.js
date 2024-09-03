@@ -1,13 +1,13 @@
-﻿// js/carQuotation.js
-
-// Declare variables that will be set in the view
+﻿// Declare variables that will be set in the view
 var csrfToken;
 var viewPdfUrl;
+var sendQuotationEmailUrl;
 
 // Function to initialize variables
-function initializeVariables(token, viewPdf) {
+function initializeVariables(token, viewPdf, sendEmailUrl) {
     csrfToken = token;
     viewPdfUrl = viewPdf;
+    sendQuotationEmailUrl = sendEmailUrl;
 }
 
 // Global variable to keep track of the number of quotation items
@@ -40,6 +40,15 @@ $(document).ready(function () {
 
     // Event listener for viewing PDF
     $(document).on('click', '.view-pdf', viewPdf);
+
+    // Event listener for sending quotation email
+    $(document).on('click', '.send-quotation-email', function (e) {
+        e.preventDefault();
+        console.log('Send Email button clicked');
+        var quotationId = $(this).data('quotation-id');
+        console.log('Quotation ID:', quotationId);
+        sendQuotationEmail(quotationId);
+    });
 
     // Add event listeners for real-time calculation
     $('#quotationForm').on('input', '.calc-input', calculateTotals);
@@ -161,7 +170,7 @@ function submitQuotation() {
 
     // AJAX request to submit quotation data to the server
     $.ajax({
-        url: addQuotationUrl,
+        url: addQuotationUrl,  // Ensure this URL is set correctly in the cshtml file
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(quotationData),
@@ -195,20 +204,6 @@ function submitQuotation() {
     });
 }
 
-// Function to clear the quotation form after submission or cancellation
-function clearQuotationForm() {
-    console.log('Clearing quotation form');
-    $('#quotationForm')[0].reset();
-    $('#quotationItems').empty();
-    itemIndex = 0;
-    $('#SubTotal, #TotalAmount').val('');
-    $('.error-message').remove();
-    $('#DateAdded, #IssueName, #Notes, #LaborPrice, #Discount, #ShippingFee').val('');
-    $('.quotation-item').remove();
-    console.log('Quotation form cleared');
-    populateCustomerDetails();
-}
-
 // Function to view the PDF in an iframe modal
 function viewPdf(e) {
     e.preventDefault();
@@ -225,4 +220,27 @@ function viewPdf(e) {
     // Set the iframe src and show the modal
     $('#pdfViewerFrame').attr('src', url);
     $('#pdfViewerModal').modal('show');
+}
+
+// Function to send the quotation email
+function sendQuotationEmail(quotationId) {
+    $.ajax({
+        url: sendQuotationEmailUrl,  // Ensure this URL is set correctly in the cshtml file
+        type: 'POST',
+        data: { quotationId: quotationId },
+        headers: {
+            'RequestVerificationToken': csrfToken
+        },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert('An error occurred while sending the email. Please try again.');
+        }
+    });
 }

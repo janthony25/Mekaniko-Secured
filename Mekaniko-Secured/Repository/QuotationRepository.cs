@@ -133,5 +133,17 @@ namespace Mekaniko_Secured.Repository
                     }).ToList()
                 }).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> MarkEmailSentAsync(int id)
+        {
+            var quotation = await _data.Quotations.FindAsync(id);
+            if (quotation != null)
+            {
+                quotation.IsEmailSent = true;
+                await _data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

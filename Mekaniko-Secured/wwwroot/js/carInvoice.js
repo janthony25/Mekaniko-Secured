@@ -308,3 +308,11 @@ function sendInvoiceEmail(e) {
         }
     });
 }
+
+// Handle PDF download
+$(document).on('click', '.download-pdf', function (e) {
+    e.preventDefault();
+    var quotationId = $(this).data('quotation-id');
+    var downloadUrl = '/Quotation/GeneratePdf?id=' + quotationId + '&download=true';
+    window.location.href = downloadUrl;
+});
