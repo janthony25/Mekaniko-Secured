@@ -13,6 +13,7 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<decimal> GetRemainingBalanceAsync();
         Task<List<UnpaidInvoiceListDto>> GetUnpaidInvoicesAsync();
         Task<bool> MarkInvoiceAsPaidAsync(int invoiceId);
-        Task<bool> MarkEmailAsSentAsync(int invoiceId); 
+        Task<bool> MarkEmailAsSentAsync(int invoiceId);
+        Task<bool> DeleteInvoiceAsync(int invoiceId);
     }
 }

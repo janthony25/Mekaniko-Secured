@@ -14,12 +14,14 @@ namespace Mekaniko_Secured.Controllers
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly IInvoicePdfService _invoicePdfService;
         private readonly IEmailService _emailService;
+        private readonly ILogger<InvoiceController> _logger;
 
-        public InvoiceController(IInvoiceRepository invoiceRepository, IInvoicePdfService invoicePdfService, IEmailService emailService)
+        public InvoiceController(IInvoiceRepository invoiceRepository, IInvoicePdfService invoicePdfService, IEmailService emailService, ILogger<InvoiceController> logger)
         {
             _invoiceRepository = invoiceRepository;
             _invoicePdfService = invoicePdfService;
             _emailService = emailService;
+            _logger = logger;
         }
 
         // POST: Add Invoice to Car
@@ -187,6 +189,37 @@ namespace Mekaniko_Secured.Controllers
             {
                 Console.WriteLine($"Error in MarkAsPaid: {ex.Message}");
                 return Json(new { success = false, message = "An error occurred while marking the invoice as paid." });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteInvoice(int invoiceId)
+        {
+            try
+            {
+                // Call the repository method to delete the invoice
+                var result = await _invoiceRepository.DeleteInvoiceAsync(invoiceId);
+
+                if (result)
+                {
+                    // If deletion was successful, return a success message
+                    return Json(new { success = true, message = "Invoice deleted successfully." });
+                }
+                else
+                {
+                    // If the invoice wasn't found, return an error message
+                    return Json(new { success = false, message = "Invoice not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error deleting invoice");
+
+                // Return an error message
+                return Json(new { success = false, message = "An error occurred while deleting the invoice." });
             }
         }
     }

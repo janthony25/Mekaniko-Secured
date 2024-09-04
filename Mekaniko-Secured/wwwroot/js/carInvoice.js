@@ -4,6 +4,7 @@ var addInvoiceUrl;
 var markAsPaidUrl;
 var viewPdfUrl;
 var sendInvoiceEmailUrl;
+var deleteInvoiceUrl; // Added for deletion
 
 // Global variable to keep track of the number of invoice items
 let itemIndex = 0;
@@ -17,6 +18,7 @@ $(document).ready(function () {
     markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
     viewPdfUrl = $('#scriptData').data('view-pdf-url');
     sendInvoiceEmailUrl = $('#scriptData').data('send-invoice-email-url');
+    deleteInvoiceUrl = $('#scriptData').data('delete-invoice-url'); // Initialize deleteInvoiceUrl
 
     // Event listener for the "Add Invoice" button
     $('.btn-warning[data-bs-target="#addInvoiceModal"]').click(function () {
@@ -59,6 +61,45 @@ $(document).ready(function () {
             markInvoiceAsPaid(invoiceId);
         }
     });
+
+    // Delete Invoice functionality
+    $(document).on('click', '.delete-invoice-btn', function () {
+        var invoiceId = $(this).data('invoice-id');
+        var invoiceIssue = $(this).data('invoice-issue');
+
+        $('#deleteInvoiceId').text(invoiceId);
+        $('#deleteInvoiceIssue').text(invoiceIssue);
+        $('#hiddenDeleteInvoiceId').val(invoiceId);
+
+        $('#deleteInvoiceModal').modal('show');
+    });
+
+    $('#confirmDeleteInvoiceBtn').click(function () {
+        var invoiceId = $('#hiddenDeleteInvoiceId').val().trim();
+
+        $.ajax({
+            url: deleteInvoiceUrl,
+            type: 'POST',
+            data: { invoiceId: invoiceId },  // Ensure this matches the controller action parameter name
+            headers: {
+                'RequestVerificationToken': csrfToken  // CSRF token
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#deleteInvoiceModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error occurred while deleting invoice.');
+                console.error('AJAX error:', status, error);
+                console.error('Response text:', xhr.responseText);
+            }
+        });
+    });
 });
 
 function populateCustomerDetails() {
@@ -69,6 +110,7 @@ function populateCustomerDetails() {
     $('#CarRego').val(carRego);
     console.log('Customer details populated:', { name: customerName, rego: carRego });
 }
+
 
 function addInvoiceItem() {
     console.log('Adding new invoice item');

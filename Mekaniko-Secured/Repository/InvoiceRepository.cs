@@ -60,6 +60,21 @@ namespace Mekaniko_Secured.Repository
             await _data.SaveChangesAsync();
         }
 
+        public async Task<bool> DeleteInvoiceAsync(int invoiceId)
+        {
+            var invoice = await _data.Invoices.FindAsync(invoiceId);
+
+            if (invoice == null)
+            {
+                return false;
+            }
+
+            _data.Invoices.Remove(invoice);
+            await _data.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<InvoiceDetailsDto> GetInvoiceDetailsAsync(int id)
         {
             var invoice = await _data.Invoices
