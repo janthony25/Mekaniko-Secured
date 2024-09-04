@@ -90,13 +90,16 @@
         }
     </tbody>
 </table>
-
+<!-- Store the CSRF token and URLs as data attributes on a global element -->
 <div id="scriptData"
-     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")">
+     data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")"
+     data-view-pdf-url="@Url.Action("GeneratePdf", "Invoice")"
+     data-send-invoice-email-url="@Url.Action("SendInvoiceEmail", "Invoice")"
+     data-delete-invoice-url="@Url.Action("DeleteInvoice", "Invoice")">
 </div>
 
-@*Render the partial view for modals*@
-@Html.Partial("_InvoiceSummaryModals")
+@* Render the partial view for modals *@
+@await Html.PartialAsync("_InvoiceSummaryModals")
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -105,10 +108,11 @@
     <script>
         // Provide the CSRF token and URLs to your external script
         var csrfToken = $('input[name="__RequestVerificationToken"]').val();
-        var addInvoiceUrl = '@Url.Action("AddInvoiceToCar", "Invoice")';
-        var getInvoiceDetailsUrl = '@Url.Action("GetInvoiceDetails", "Invoice")';
         var markAsPaidUrl = $('#scriptData').data('mark-as-paid-url');
+        var viewPdfUrl = $('#scriptData').data('view-pdf-url');
+        var sendInvoiceEmailUrl = $('#scriptData').data('send-invoice-email-url');
+        var deleteInvoiceUrl = $('#scriptData').data('delete-invoice-url');
     </script>
 
-    <script src="~/js/carInvoice.js"></script>  <!-- External JS file -->
+    <script src="~/js/invoiceSummary.js"></script>  <!-- External JS file -->
 }
