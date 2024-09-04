@@ -102,7 +102,8 @@ namespace Mekaniko_Secured.Repository
                     DueDate = invoice.DueDate,
                     TotalAmount = invoice.TotalAmount,
                     AmountPaid = invoice.AmountPaid,
-                    IsPaid = invoice.IsPaid
+                    IsPaid = invoice.IsPaid,
+                    Notes = invoice.Notes
                 }).ToListAsync();
         }
 

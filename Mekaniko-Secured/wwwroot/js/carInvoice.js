@@ -61,14 +61,21 @@ $(document).ready(function () {
             markInvoiceAsPaid(invoiceId);
         }
     });
-
-    // Delete Invoice functionality
     $(document).on('click', '.delete-invoice-btn', function () {
         var invoiceId = $(this).data('invoice-id');
         var invoiceIssue = $(this).data('invoice-issue');
+        var invoiceTotalAmount = $(this).data('invoice-total-amount');
+        var invoiceStatus = $(this).data('invoice-status');
+        var invoiceNotes = $(this).data('invoice-notes'); // Get the Notes field
+
+        // Convert invoiceStatus to a human-readable format
+        var statusText = invoiceStatus ? 'Paid' : 'Not Paid';
 
         $('#deleteInvoiceId').text(invoiceId);
         $('#deleteInvoiceIssue').text(invoiceIssue);
+        $('#deleteInvoiceTotalAmount').text(invoiceTotalAmount);
+        $('#deleteInvoiceStatus').text(statusText);
+        $('#deleteInvoiceNotes').text(invoiceNotes); // Populate the Notes field
         $('#hiddenDeleteInvoiceId').val(invoiceId);
 
         $('#deleteInvoiceModal').modal('show');

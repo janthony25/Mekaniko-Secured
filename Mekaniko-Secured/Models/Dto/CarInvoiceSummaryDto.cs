@@ -19,5 +19,6 @@
         public decimal? TotalAmount { get; set; }
         public decimal? AmountPaid { get; set; }
         public bool? IsPaid { get; set; }
+        public string? Notes { get; set; }
     }
 }
