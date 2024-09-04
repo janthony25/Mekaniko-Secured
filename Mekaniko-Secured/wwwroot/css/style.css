@@ -107,10 +107,17 @@
 
 /************************ INVOICE AND QUOTATION MODALS *********************** */
 
+.bi-check-lg {
+}
 
+.check-container {
+    border: 1px solid black;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
 /*********************************************** */
 /************************ DASHBOARD *********************** */
-
 .customer-count-box,
 .car-count-box,
 .invoice-count-box,

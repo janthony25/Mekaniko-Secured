@@ -2,6 +2,8 @@
 
 <h2>Quotations</h2>
 
+@Html.AntiForgeryToken()
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -13,21 +15,20 @@
             <th class="text-center">Total Amount</th>
             <th class="text-center">Sent</th>
             <th class="text-center">Action</th>
-            <th class="text-center"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var invoice in Model)
+        @foreach (var quotation in Model)
         {
             <tr>
-                <td class="text-center">@invoice.QuotationId</td>
-                <td class="text-center">@invoice.CustomerName</td>
-                <td class="text-center">@invoice.CarRego</td>
-                <td class="text-center">@invoice.IssueName</td>
-                <td class="text-center">@invoice.DateAdded?.ToString("MM/dd/yyyy")</td>
-                <td class="text-center">@invoice.TotalAmount</td>
+                <td class="text-center">@quotation.QuotationId</td>
+                <td class="text-center">@quotation.CustomerName</td>
+                <td class="text-center">@quotation.CarRego</td>
+                <td class="text-center">@quotation.IssueName</td>
+                <td class="text-center">@quotation.DateAdded?.ToString("MM/dd/yyyy")</td>
+                <td class="text-center">@quotation.TotalAmount?.ToString("C")</td>
                 <td class="text-center">
-                    @if (invoice.IsEmailSent == true)
+                    @if (quotation.IsEmailSent == true)
                     {
                         <i class="bi bi-check-lg"></i>
                     }
@@ -35,41 +36,67 @@
                     {
                         <p></p>
                     }
-                    
                 </td>
                 <td class="text-center">
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown_@quotation.QuotationId" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="actionDropdown">
-                            @*  <li>
-                        <a href="#" class="dropdown-item view-invoice" data-invoice-id="@invoice.InvoiceId">
-                        <i class="bi bi-eye"></i> Open Invoice
-                        </a>
-                        </li> *@
-                            
+                        <ul class="dropdown-menu" aria-labelledby="actionDropdown_@quotation.QuotationId">
                             <li>
-                                <button class="dropdown-item view-pdf" data-invoice-id="@invoice.QuotationId"><i class="bi bi-file-pdf"></i> View PDF</button>
+                                <button class="dropdown-item view-pdf" data-quotation-id="@quotation.QuotationId">
+                                    <i class="bi bi-file-pdf"></i> View PDF
+                                </button>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item download-pdf" data-invoice-id="@invoice.QuotationId">
+                                <a href="#" class="dropdown-item download-pdf" data-quotation-id="@quotation.QuotationId">
                                     <i class="bi bi-download"></i> Download PDF
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item send-invoice-email" data-invoice-id="@invoice.QuotationId">
+                                <a href="#" class="dropdown-item send-quotation-email" data-quotation-id="@quotation.QuotationId">
                                     <i class="bi bi-envelope-paper"></i> Send Email
                                 </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item btn-danger"><i class="bi bi-trash3-fill"></i> Delete Quotation</a>
                             </li>
                         </ul>
                     </div>
                 </td>
-
             </tr>
         }
     </tbody>
 </table>
+
+<div id="scriptData"
+     data-view-pdf-url="@Url.Action("GeneratePdf", "Quotation")"
+     data-send-email-url="@Url.Action("SendQuotationEmail", "Quotation")"
+     data-download-pdf-url="@Url.Action("GeneratePdf", "Quotation")">
+</div>
+
+<!-- PDF Viewer Modal -->
+<div class="modal fade" id="pdfViewerModal" tabindex="-1" aria-labelledby="pdfViewerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfViewerModalLabel">View Quotation PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfViewerFrame" width="100%" height="600px" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
+
+    <script>
+        var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+        var viewPdfUrl = $('#scriptData').data('view-pdf-url');
+        var sendEmailUrl = $('#scriptData').data('send-email-url');
+        var downloadPdfUrl = $('#scriptData').data('download-pdf-url');
+    </script>
+
+    <script src="~/js/quotationSummary.js"></script>
+}
