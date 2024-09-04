@@ -77,5 +77,13 @@ namespace Mekaniko_Secured.Controllers
             return View(customerCar);
         }
 
+
+        // GET: Search Customer
+        [Authorize (Policy = "Admin")]
+        public async Task<IActionResult> SearchCustomer(string customerName)
+        {
+            var customer = await _customerRepository.SearchCustomerByNameAsync(customerName);
+            return View("GetCustomerList", customer);
+        }
     }
 }

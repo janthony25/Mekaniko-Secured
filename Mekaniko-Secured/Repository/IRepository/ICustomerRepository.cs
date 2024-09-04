@@ -10,5 +10,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<CustomerDto> GetCustomerCarsByIdAsync(int id);
         Task<bool> AddCarToCustomerAsync(AddCarDto dto);
         Task<int> GetTotalCustomerCountAsync();
+        Task<List<CustomerSummaryDto>> SearchCustomerByNameAsync(string customerName);
     }
 }

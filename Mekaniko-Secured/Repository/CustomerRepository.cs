@@ -122,9 +122,30 @@ namespace Mekaniko_Secured.Repository
                 }).ToListAsync();
         }
 
+      
+
         public async Task<int> GetTotalCustomerCountAsync()
         {
             return await _data.Customers.CountAsync();
+        }
+
+        public async Task<List<CustomerSummaryDto>> SearchCustomerByNameAsync(string customerName)
+        {
+            if (string.IsNullOrEmpty(customerName))
+            {
+                // If no name is provided, return all customers
+                return await GetCustomerListAsync();
+            }
+
+            return await _data.Customers
+                .Where(c => c.CustomerName.Contains(customerName))
+                .Select(c => new CustomerSummaryDto
+                {
+                    CustomerId = c.CustomerId,
+                    CustomerName = c.CustomerName,
+                    CustomerEmail = c.CustomerEmail,
+                    CustomerNumber = c.CustomerNumber
+                }).ToListAsync();
         }
     }
 }
