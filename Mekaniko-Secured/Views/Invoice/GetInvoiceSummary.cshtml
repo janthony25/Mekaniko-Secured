@@ -40,6 +40,14 @@
                             </button>
                         </form>
                     </li>
+                    <li>
+                        <form method="get" asp-action="FilterByEmailStatus" asp-controller="Invoice" class="mb-0">
+                            <input type="hidden" name="status" value="unknown" />
+                            <button type="submit" class="dropdown-item">
+                                Unsent Email
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -240,5 +240,21 @@ namespace Mekaniko_Secured.Controllers
             var invoiceStatus = await _invoiceRepository.FilterInvoicePaid(isPaid);
             return View("GetInvoiceSummary", invoiceStatus);
         }
+
+        // GET: Filter by Unsent Email
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> FilterByEmailStatus(string status)
+        {
+            bool? isEmailSent = status switch
+            {
+                "sent" => true,
+                "unsent" => false,
+                "unknown" => null,
+                _ => null
+            };
+
+            var invoices = await _invoiceRepository.FilterByEmailStatus(isEmailSent);
+            return View("GetInvoiceSummary", invoices);
+        }
     }
 }
