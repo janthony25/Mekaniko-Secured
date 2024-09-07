@@ -34,6 +34,12 @@ $(document).ready(function () {
         addInvoiceItem();
     });
 
+    // Event listener for delete item button
+    $(document).on('click', '.delete-item', function () {
+        $(this).closest('.invoice-item').remove();
+        calculateTotals();
+    });
+
     // Event listener for the "Save Invoice" button
     $('#saveInvoiceBtn').click(function () {
         if (validateForm()) {
@@ -138,6 +144,9 @@ function addInvoiceItem() {
             <div class="form-group ms-4">
                 <label for="InvoiceItems[${itemIndex}].ItemTotal">Item Total</label>
                 <input type="number" name="InvoiceItems[${itemIndex}].ItemTotal" class="form-control total-input" readonly />
+            </div>
+            <div class="form-group ms-4 d-flex align-items-end">
+                <button type="button" class="btn btn-danger delete-item"><i class="bi bi-trash"></i></button>
             </div>
         </div>
     `;

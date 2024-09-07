@@ -1,45 +1,47 @@
-﻿// invoiceSummary.js
-
-// Wait for the DOM to be fully loaded before executing any JavaScript
-$(document).ready(function () {
-    console.log('InvoiceSummary page loaded');
-
-    // Event listener for marking an invoice as paid
-    $(document).on('click', '.mark-as-paid', function (e) {
+﻿$(document).ready(function () {
+    // Mark as Paid functionality
+    $('.mark-as-paid').click(function (e) {
         e.preventDefault();
-        console.log("Mark as paid clicked");
-
         var invoiceId = $(this).data('invoice-id');
-        console.log("Invoice ID:", invoiceId);
-
-        if (confirm("Are you sure you want to mark this invoice as paid?")) {
-            markInvoiceAsPaid(invoiceId);
-        }
+        markInvoiceAsPaid(invoiceId);
     });
 
-    // Event listener for viewing PDF
-    $(document).on('click', '.view-pdf', viewPdf);
-
-    // Event listener for downloading PDF
-    $(document).on('click', '.download-pdf', downloadPdf);
-
-    // Event listener for sending email
-    $(document).on('click', '.send-invoice-email', sendInvoiceEmail);
-
-    // Event listener for deleting invoice
-    $(document).on('click', '.delete-invoice', function (e) {
+    // View PDF functionality
+    $('.view-pdf').click(function (e) {
         e.preventDefault();
         var invoiceId = $(this).data('invoice-id');
-        if (confirm("Are you sure you want to delete this invoice?")) {
-            deleteInvoice(invoiceId);
-        }
+        viewPdf(invoiceId);
+    });
+
+    // Download PDF functionality
+    $('.download-pdf').click(function (e) {
+        e.preventDefault();
+        var invoiceId = $(this).data('invoice-id');
+        downloadPdf(invoiceId);
+    });
+
+    // Send Email functionality
+    $('.send-invoice-email').click(function (e) {
+        e.preventDefault();
+        var invoiceId = $(this).data('invoice-id');
+        sendInvoiceEmail(invoiceId);
+    });
+
+    // Delete Invoice functionality
+    $('.delete-invoice').click(function (e) {
+        e.preventDefault();
+        var invoiceId = $(this).data('invoice-id');
+        showDeleteConfirmation(invoiceId);
+    });
+
+    // Confirm Delete Invoice
+    $('#confirmDeleteInvoice').click(function () {
+        var invoiceId = $('#deleteInvoiceId').text();
+        deleteInvoice(invoiceId);
     });
 });
 
-// Function to handle marking an invoice as paid
 function markInvoiceAsPaid(invoiceId) {
-    console.log("Sending AJAX request to mark invoice as paid");
-
     $.ajax({
         url: markAsPaidUrl,
         type: 'POST',
@@ -48,7 +50,6 @@ function markInvoiceAsPaid(invoiceId) {
             'RequestVerificationToken': csrfToken
         },
         success: function (response) {
-            console.log("AJAX response received:", response);
             if (response.success) {
                 alert(response.message);
                 location.reload();
@@ -58,49 +59,23 @@ function markInvoiceAsPaid(invoiceId) {
         },
         error: function (xhr, status, error) {
             console.error('AJAX error:', status, error);
-            console.error('Response text:', xhr.responseText);
             alert('An error occurred while marking the invoice as paid.');
         }
     });
 }
 
-// Function to view PDF
-function viewPdf(e) {
-    e.preventDefault();
-    console.log('View PDF button clicked');
-    var invoiceId = $(this).data('invoice-id');
-    console.log('Invoice ID:', invoiceId);
-    if (!invoiceId) {
-        console.error('No invoice ID found');
-        return;
-    }
+function viewPdf(invoiceId) {
     var url = viewPdfUrl + '?id=' + invoiceId;
-    console.log('View URL:', url);
     $('#pdfViewerFrame').attr('src', url);
     $('#pdfViewerModal').modal('show');
 }
 
-// Function to download PDF
-function downloadPdf(e) {
-    e.preventDefault();
-    console.log('Download PDF button clicked');
-    var invoiceId = $(this).data('invoice-id');
-    console.log('Invoice ID:', invoiceId);
-    if (!invoiceId) {
-        console.error('No invoice ID found');
-        return;
-    }
+function downloadPdf(invoiceId) {
     var downloadUrl = viewPdfUrl + '?id=' + invoiceId + '&download=true';
-    console.log('Download URL:', downloadUrl);
     window.location.href = downloadUrl;
 }
 
-// Function to send invoice email
-function sendInvoiceEmail(e) {
-    e.preventDefault();
-    var invoiceId = $(this).data('invoice-id');
-    console.log('Sending email for invoice ID:', invoiceId);
-
+function sendInvoiceEmail(invoiceId) {
     $.ajax({
         url: sendInvoiceEmailUrl,
         type: 'POST',
@@ -122,10 +97,12 @@ function sendInvoiceEmail(e) {
     });
 }
 
-// Function to delete invoice
-function deleteInvoice(invoiceId) {
-    console.log("Deleting invoice:", invoiceId);
+function showDeleteConfirmation(invoiceId) {
+    $('#deleteInvoiceId').text(invoiceId);
+    $('#deleteInvoiceModal').modal('show');
+}
 
+function deleteInvoice(invoiceId) {
     $.ajax({
         url: deleteInvoiceUrl,
         type: 'POST',
@@ -136,6 +113,7 @@ function deleteInvoice(invoiceId) {
         success: function (response) {
             if (response.success) {
                 alert(response.message);
+                $('#deleteInvoiceModal').modal('hide');
                 location.reload();
             } else {
                 alert('Error: ' + response.message);
