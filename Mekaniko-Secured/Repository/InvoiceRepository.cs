@@ -75,6 +75,26 @@ namespace Mekaniko_Secured.Repository
             return true;
         }
 
+        public async Task<List<InvoiceListDto>> FilterInvoicePaid(bool status)
+        {
+            return await _data.Invoices
+                .Include(i => i.Car)
+                    .ThenInclude(car => car.Customer)
+                .Where(i => i.IsPaid == status)  
+                .Select(i => new InvoiceListDto
+                {
+                    IsPaid = i.IsPaid,
+                    IssueName = i.IssueName,
+                    InvoiceId = i.InvoiceId,
+                    CustomerName = i.Car.Customer.CustomerName,
+                    DateAdded = i.DateAdded,
+                    DueDate = i.DueDate,
+                    CarRego = i.Car.CarRego,
+                    TotalAmount = i.TotalAmount,
+                    IsEmailSent = i.IsEmailSent
+                }).ToListAsync();
+        }
+
         public async Task<InvoiceDetailsDto> GetInvoiceDetailsAsync(int id)
         {
             var invoice = await _data.Invoices

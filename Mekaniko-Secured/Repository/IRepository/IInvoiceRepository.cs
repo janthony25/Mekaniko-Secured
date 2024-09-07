@@ -16,5 +16,6 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<bool> MarkEmailAsSentAsync(int invoiceId);
         Task<bool> DeleteInvoiceAsync(int invoiceId);
         Task<List<InvoiceListDto>> SearchInvoiceByRegoAsync(string rego);
+        Task<List<InvoiceListDto>> FilterInvoicePaid(bool isPaid);
     }
 }

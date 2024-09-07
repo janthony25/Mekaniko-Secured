@@ -231,5 +231,14 @@ namespace Mekaniko_Secured.Controllers
             var invoice = await _invoiceRepository.SearchInvoiceByRegoAsync(rego);
             return View("GetInvoiceSummary", invoice);
         }
+
+        // GET: Filter by Status Paid
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> PaidInvoices(string status)
+        {
+            bool isPaid = status == "Paid";
+            var invoiceStatus = await _invoiceRepository.FilterInvoicePaid(isPaid);
+            return View("GetInvoiceSummary", invoiceStatus);
+        }
     }
 }

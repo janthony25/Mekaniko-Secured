@@ -229,3 +229,14 @@
 .customer-car-details p {
     margin-bottom: 2px;
 }
+
+
+/************************ INVOICE SUMMARY *********************** */
+
+.invoice-status-filter {
+    width: 32px;
+}
+
+.invoice-status-filter:after {
+    display: none;
+}
