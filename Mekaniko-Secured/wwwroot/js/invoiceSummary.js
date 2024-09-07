@@ -50,6 +50,7 @@
         window.location.href = downloadUrl;
     });
 
+
     // Send Invoice Email functionality
     $('.send-invoice-email').click(function (e) {
         e.preventDefault();
@@ -78,10 +79,24 @@
     });
 
     // Delete Invoice functionality
-    $('.delete-invoice').click(function (e) {
+    $(document).on('click', '.delete-invoice-btn', function (e) {
         e.preventDefault();
+        console.log("Delete invoice button clicked");
+
         var invoiceId = $(this).data('invoice-id');
+        var status = $(this).data('invoice-status');
+        var name = $(this).data('invoice-name');
+        var rego = $(this).data('invoice-rego');
+        var issue = $(this).data('invoice-issue');
+        var totalAmount = $(this).data('invoice-total-amount');
+
         $('#deleteInvoiceId').text(invoiceId);
+        $('#deleteInvoiceStatus').text(status); // No transformation needed
+        $('#deleteInvoiceName').text(name);
+        $('#deleteInvoiceRego').text(rego);
+        $('#deleteInvoiceIssue').text(issue);
+        $('#deleteInvoiceTotalAmount').text(totalAmount);
+
         $('#deleteInvoiceModal').modal('show');
     });
 

@@ -77,9 +77,15 @@
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item delete-invoice" data-invoice-id="@invoice.InvoiceId">
+                                <a href="#" class="dropdown-item delete-invoice-btn"
+                                   data-invoice-id="@invoice.InvoiceId"
+                                   data-invoice-status="@(invoice.IsPaid ?? false ? "Paid" : "Not Paid")"
+                                   data-invoice-name="@invoice.CustomerName"
+                                   data-invoice-rego="@invoice.CarRego"
+                                   data-invoice-issue="@invoice.IssueName"
+                                   data-invoice-total-amount="@invoice.TotalAmount?.ToString("C")">
                                     <i class="bi bi-trash3-fill"></i> Delete Invoice
-                                </button>
+                                </a>
                             </li>
                         </ul>
                     </div>
