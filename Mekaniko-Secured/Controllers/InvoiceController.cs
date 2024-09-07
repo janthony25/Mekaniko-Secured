@@ -1,4 +1,5 @@
-﻿using Mekaniko_Secured.Models.Dto;
+﻿using Mekaniko_Secured.Models;
+using Mekaniko_Secured.Models.Dto;
 using Mekaniko_Secured.Repository.IRepository;
 using Mekaniko_Secured.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -221,6 +222,14 @@ namespace Mekaniko_Secured.Controllers
                 // Return an error message
                 return Json(new { success = false, message = "An error occurred while deleting the invoice." });
             }
+        }
+
+        // GET: Search Invoice by Rego
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> SearchInvoices(string rego)
+        {
+            var invoice = await _invoiceRepository.SearchInvoiceByRegoAsync(rego);
+            return View("GetInvoiceSummary", invoice);
         }
     }
 }

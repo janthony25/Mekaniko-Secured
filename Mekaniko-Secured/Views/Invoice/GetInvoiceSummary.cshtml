@@ -4,6 +4,17 @@
 
 @Html.AntiForgeryToken()
 
+<div class="row search-container mt-5">
+    <div class="col-md-6">
+    </div>
+    <div class="col-md-6 text-end">
+        <form method="get" asp-action="SearchInvoices" asp-controller="Invoice" class="d-flex align-items-center justify-content-end">
+            <input type="text" name="rego" placeholder="Search Rego #" />
+            <button type="submit" class="btn btn-sm btn-primary ms-1"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+</div>
+
 <table class="table table-striped">
     <thead>
         <tr>

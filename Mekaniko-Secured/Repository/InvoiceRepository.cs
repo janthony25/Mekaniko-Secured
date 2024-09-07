@@ -127,6 +127,7 @@ namespace Mekaniko_Secured.Repository
             return await _data.Invoices
                 .Include(i => i.Car)
                     .ThenInclude(car => car.Customer)
+                .OrderByDescending(i => i.DateAdded)
                 .Select(i => new InvoiceListDto
                 {
                     IsPaid = i.IsPaid,
@@ -209,6 +210,32 @@ namespace Mekaniko_Secured.Repository
 
             await _data.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<InvoiceListDto>> SearchInvoiceByRegoAsync(string rego)
+        {
+
+            if(string.IsNullOrEmpty(rego))
+            {
+                return await GetInvoiceListAsync();
+            }
+
+            return await _data.Invoices
+                .Include(i => i.Car)
+                    .ThenInclude(car => car.Customer)
+                .Where(i => i.Car.CarRego.Contains(rego))
+                .Select(i => new InvoiceListDto
+                {
+                    IsPaid = i.IsPaid,
+                    IssueName = i.IssueName,
+                    InvoiceId = i.InvoiceId,
+                    CustomerName = i.Car.Customer.CustomerName,
+                    DateAdded = i.DateAdded,
+                    DueDate = i.DueDate,
+                    CarRego = i.Car.CarRego,
+                    TotalAmount = i.TotalAmount,
+                    IsEmailSent = i.IsEmailSent
+                }).ToListAsync();
         }
     }
 }
