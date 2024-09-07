@@ -150,5 +150,30 @@ namespace Mekaniko_Secured.Controllers
             var quotation = await _quotationRepository.GetQuotationListAsync();
             return View(quotation);
         }
+
+        // POST: Delete Quotation
+        [HttpPost]
+        [Authorize (Policy = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteQuotation(int id)
+        {
+            try
+            {
+                var result = await _quotationRepository.DeleteQuotationAsync(id);
+                if (result)
+                {
+                    return Json(new { success = true, message = "Quotation deleted successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Quotation not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting quotation");
+                return Json(new { success = false, message = "An error occurred while deleting the quotation." });
+            }
+        }
     }
 }

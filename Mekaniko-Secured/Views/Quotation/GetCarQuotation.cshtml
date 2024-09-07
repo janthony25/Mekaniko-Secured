@@ -76,7 +76,13 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item btn-danger"><i class="bi bi-trash3-fill"></i> Delete Quotation</a>
+                                <a href="#" class="dropdown-item delete-quotation-btn"
+                                   data-quotation-id="@quote.QuotationId"
+                                   data-quotation-issue="@quote.IssueName"
+                                   data-quotation-total-amount="@quote.TotalAmount"
+                                   data-quotation-date="@quote.DateAdded?.ToString("MM/dd/yyyy")">
+                                    <i class="bi bi-trash3-fill"></i> Delete Quotation
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -85,6 +91,32 @@
         }
     </tbody>
 </table>
+
+<!-- Modal for Confirming Quotation Deletion -->
+<div class="modal fade" id="deleteQuotationModal" tabindex="-1" aria-labelledby="deleteQuotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteQuotationModalLabel">Delete Quotation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the following quotation?</p>
+                <div class="border p-3">
+                    <p><strong>Quotation ID:</strong> <span id="deleteQuotationId"></span></p>
+                    <p><strong>Issue:</strong> <span id="deleteQuotationIssue"></span></p>
+                    <p><strong>Total Amount:</strong> <span id="deleteQuotationTotalAmount"></span></p>
+                    <p><strong>Date Added:</strong> <span id="deleteQuotationDate"></span></p>
+                </div>
+                <input type="hidden" id="hiddenDeleteQuotationId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteQuotationBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @Html.Partial("_GetCarQuotationModals")
 
@@ -98,8 +130,59 @@
             var addQuotationUrl = '@Url.Action("AddQuotationToCar", "Quotation")';
             var viewPdfUrl = '@Url.Action("GeneratePdf", "Quotation")';
             var sendQuotationEmailUrl = '@Url.Action("SendQuotationEmail", "Quotation")';
+            var deleteQuotationUrl = '@Url.Action("DeleteQuotation", "Quotation")';
 
-            initializeVariables(csrfToken, addQuotationUrl, viewPdfUrl, sendQuotationEmailUrl);
+           initializeVariables(csrfToken, addQuotationUrl, viewPdfUrl, sendQuotationEmailUrl);
+
+
+         // Delete Quotation functionality
+            $('.delete-quotation-btn').click(function (e) {
+                e.preventDefault();
+                var quotationId = $(this).data('quotation-id');
+                var quotationIssue = $(this).data('quotation-issue');
+                var quotationTotalAmount = $(this).data('quotation-total-amount');
+                var quotationDate = $(this).data('quotation-date');
+
+                $('#deleteQuotationId').text(quotationId);
+                $('#deleteQuotationIssue').text(quotationIssue);
+                $('#deleteQuotationTotalAmount').text(quotationTotalAmount);
+                $('#deleteQuotationDate').text(quotationDate);
+                $('#hiddenDeleteQuotationId').val(quotationId);
+
+                $('#deleteQuotationModal').modal('show');
+            });
+
+           $('#confirmDeleteQuotationBtn').click(function () {
+    var quotationId = $('#hiddenDeleteQuotationId').val();
+    
+    $.ajax({
+        url: deleteQuotationUrl,
+        type: 'POST',
+        data: { id: quotationId },
+        headers: {
+            'RequestVerificationToken': csrfToken
+        },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                $('#deleteQuotationModal').modal('hide');
+                location.reload();
+            } else {
+                alert('Error occurred while deleting quotation: ' + response.message);
+                console.error('Server response:', response);
+            }
+        },
+        error: function (xhr, status, error) {
+            alert('Error occurred while deleting quotation.');
+            console.error('AJAX error:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+        }
+    });
+});
+
+
+
                 });
     </script>
 

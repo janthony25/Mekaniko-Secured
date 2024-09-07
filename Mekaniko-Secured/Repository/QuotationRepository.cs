@@ -69,6 +69,20 @@ namespace Mekaniko_Secured.Repository
             }
         }
 
+        public async Task<bool> DeleteQuotationAsync(int id)
+        {
+            // Fetch quotation id
+            var quotation = await _data.Quotations.FindAsync(id);
+
+            if (quotation != null)
+            {
+                _data.Quotations.Remove(quotation);
+                await _data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<List<CarQuotationSummaryDto>> GetCarQuotationSummaryAsync(int id)
         {
             return await _data.Cars
