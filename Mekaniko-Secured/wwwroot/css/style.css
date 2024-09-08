@@ -240,3 +240,24 @@
 .invoice-status-filter:after {
     display: none;
 }
+
+
+/************************ ADD/REMOVE MAKES PAGE *********************** */
+
+.forms-container {
+    width: 900px;
+}
+
+.forms-container .left {
+    border: 1px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+}
+
+.forms-container .right {
+    border: 1px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+}

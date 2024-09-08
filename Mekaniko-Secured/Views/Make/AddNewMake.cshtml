@@ -1,0 +1,60 @@
+﻿@model Mekaniko_Secured.Models.Dto.AddMakeDto
+
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["DeleteMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["DeleteMessage"]
+    </div>
+}
+
+<div class="forms-container d-flex justify-content-between align-items-center">
+<div class="left">
+        <h3>Add Car Make</h3>
+        <form method="post" asp-controller="Make" asp-action="AddNewMake">
+            <div class="form-group">
+                <input asp-for="MakeName" class="form-control" placeholder="Make Name" />
+                <span asp-validation-for="MakeName" class="text-danger"></span>
+            </div>
+
+            <!-- This will display the error message if a duplicate MakeName exists -->
+            <div class="form-group text-danger">
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <p>@ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage</p>
+                }
+            </div>
+
+            <div class="text-end mt-2">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            
+        </form>
+</div>
+    <div class="right">
+        <h3>Remove Car Make</h3>
+        <form method="post" asp-controller="Make" asp-action="DeleteMake">
+            <div class="form-group">
+                <select asp-for="MakeId" asp-items="ViewBag.Makes" class="form-control">
+                    <option value="" class="text-center">-- Select Make --</option>
+                </select>
+                <span asp-validation-for="MakeId"></span>
+            </div>
+
+            <div class="text-end mt-2">
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </div>
+        </form>
+    </div>
+
+
+
+</div>
