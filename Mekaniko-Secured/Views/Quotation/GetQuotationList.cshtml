@@ -1,6 +1,41 @@
 ﻿@model List<Mekaniko_Secured.Models.Dto.QuotationListDto>
 
-<h3 class="text-center fw-bold mt-5">Quotations</h3>
+<h3 class="text-center fw-bold mt-5">QUOTATIONS</h3>
+
+<div class="row search-container mt-5">
+    <div class="col-md-6">
+    </div>
+    <div class="col-md-6 text-end">
+        <div class="d-flex align-items-center justify-content-end">
+            <!-- Search Form -->
+            <form method="get" asp-controller="Quotation" asp-action="SearchQuotation"  class="d-flex">
+                <input type="text" name="rego" placeholder="Search Rego #" />
+                <button type="submit" class="btn btn-sm btn-primary ms-1">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+
+            <!-- Dropdown Form -->
+            <div class="dropdown ms-1">
+                <button class="btn btn-secondary invoice-status-filter btn-sm dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-funnel"></i>
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li>
+                        <form method="get" asp-action="FilterByEmailStatus" asp-controller="Quotation" class="mb-0">
+                            <input type="hidden" name="status" value="unknown" />
+                            <button type="submit" class="dropdown-item">
+                                Unsent Email
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 @Html.AntiForgeryToken()
 

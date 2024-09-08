@@ -11,5 +11,7 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<int> GetTotalQuotationCountAsync();
         Task<List<QuotationListDto>> GetQuotationListAsync();
         Task<bool> DeleteQuotationAsync(int id);
+        Task<List<QuotationListDto>> SearchQuotationByRegoAsync(string rego);
+        Task<List<QuotationListDto>> FilterByEmailStatusAsync(bool? emailStatus);
     }
 }

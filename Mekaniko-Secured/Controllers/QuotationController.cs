@@ -175,5 +175,29 @@ namespace Mekaniko_Secured.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the quotation." });
             }
         }
+
+        // GET: Search Quotation by Car Rego
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> SearchQuotation(string rego)
+        {
+            var quotation = await _quotationRepository.SearchQuotationByRegoAsync(rego);
+            return View("GetQuotationList", quotation);
+        }
+
+        // GET: Filter by Unsent Email
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> FilterByEmailStatus(string status)
+        {
+            bool? isEmailSent = status switch
+            {
+                "sent" => true,
+                "unsent" => false,
+                "unknown" => null,
+                _ => null
+            };
+
+            var quotation = await _quotationRepository.FilterByEmailStatusAsync(isEmailSent);
+            return View("GetQuotationList", quotation);
+        }
     }
 }

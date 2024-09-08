@@ -83,6 +83,30 @@ namespace Mekaniko_Secured.Repository
             return false;
         }
 
+        public async Task<List<QuotationListDto>> FilterByEmailStatusAsync(bool? emailStatus)
+        {
+            return await _data.Quotations
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.Customer)
+                .Where(q => emailStatus.HasValue ?
+                    (emailStatus.Value ? q.IsEmailSent == true : q.IsEmailSent == false) :
+                    q.IsEmailSent == null)
+                .OrderByDescending(q => q.DateAdded)
+                .Select(q => new QuotationListDto
+                {
+                    QuotationId = q.QuotationId,
+                    CustomerName = q.Car.Customer.CustomerName,
+                    CarRego = q.Car.CarRego,
+                    IssueName = q.IssueName,
+                    DateAdded = q.DateAdded,
+                    TotalAmount = q.TotalAmount,
+                    IsEmailSent = q.IsEmailSent
+                }).ToListAsync();
+
+                
+                
+        }
+
         public async Task<List<CarQuotationSummaryDto>> GetCarQuotationSummaryAsync(int id)
         {
             return await _data.Cars
@@ -184,6 +208,29 @@ namespace Mekaniko_Secured.Repository
                 return true;
             }
             return false;
+        }
+
+        public async Task<List<QuotationListDto>> SearchQuotationByRegoAsync(string rego)
+        {
+            if (string.IsNullOrEmpty(rego))
+            {
+                return await GetQuotationListAsync();
+            }
+
+            return await _data.Quotations
+                .Include(q => q.Car)
+                    .ThenInclude(car => car.Customer)
+                .Where(q => q.Car.CarRego.Contains(rego))
+                .Select(q => new QuotationListDto
+                {
+                    QuotationId = q.QuotationId,
+                    CustomerName = q.Car.Customer.CustomerName,
+                    CarRego = q.Car.CarRego,
+                    IssueName = q.IssueName,
+                    DateAdded = q.DateAdded,
+                    TotalAmount = q.TotalAmount,
+                    IsEmailSent = q.IsEmailSent
+                }).ToListAsync();
         }
     }
 }
