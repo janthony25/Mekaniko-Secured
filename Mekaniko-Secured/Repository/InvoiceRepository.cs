@@ -211,20 +211,23 @@ namespace Mekaniko_Secured.Repository
             return await _data.Invoices.SumAsync(i => i.AmountPaid ?? 0m);
         }
 
-        public async Task<List<UnpaidInvoiceListDto>> GetUnpaidInvoicesAsync()
+        public async Task<List<InvoiceListDto>> GetUnpaidInvoicesAsync()
         {
             return await _data.Invoices
                 .Include(i => i.Car)
                     .ThenInclude(car => car.Customer)
                 .Where(i => i.IsPaid == false)
-                .Select(i => new UnpaidInvoiceListDto
+                .Select(i => new InvoiceListDto
                 {
-                    InvoiceId = i.InvoiceId,
+                    IsPaid = i.IsPaid,
                     IssueName = i.IssueName,
-                    CarRego = i.Car.CarRego,
+                    InvoiceId = i.InvoiceId,
+                    CustomerName = i.Car.Customer.CustomerName,
+                    DateAdded = i.DateAdded,
                     DueDate = i.DueDate,
+                    CarRego = i.Car.CarRego,
                     TotalAmount = i.TotalAmount,
-                    isPaid = i.IsPaid
+                    IsEmailSent = i.IsEmailSent
                 }).ToListAsync();
         }
 
@@ -279,5 +282,7 @@ namespace Mekaniko_Secured.Repository
                     IsEmailSent = i.IsEmailSent
                 }).ToListAsync();
         }
+
+     
     }
 }

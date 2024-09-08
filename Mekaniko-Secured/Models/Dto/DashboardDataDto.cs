@@ -9,6 +9,6 @@
         public decimal TotalPaidAmount { get; set; }
         public decimal RemainingBalance { get; set; }
         public int TotalQuotations { get; set; }
-        public List<UnpaidInvoiceListDto> UnpaidInvoices { get; set; }
+        public List<InvoiceListDto> UnpaidInvoices { get; set; }
     }
 }

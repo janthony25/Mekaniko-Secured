@@ -58,7 +58,7 @@
                 <h4>Unpaid Invoices</h4>
             </div>
             <div>
-                <a href="#">View All</a>
+                <a asp-action="GetUnpaidInvoices" asp-controller="Invoice">View All</a>
             </div>
         </div>
         <table class="table" style="width: 600px">
@@ -83,7 +83,7 @@
                             <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
                             <td class="text-center">@invoice.TotalAmount</td>
                             <td class="text-center payment-status-column">
-                            <p class="payment-status-not-paid">@(invoice.isPaid == true ? "Paid" : "Not Paid")</p>
+                            <p class="payment-status-not-paid">@(invoice.IsPaid == true ? "Paid" : "Not Paid")</p>
                                 </td>
                             <td>
                                 <div class="dropdown">

@@ -256,5 +256,13 @@ namespace Mekaniko_Secured.Controllers
             var invoices = await _invoiceRepository.FilterByEmailStatus(isEmailSent);
             return View("GetInvoiceSummary", invoices);
         }
+
+        // GET: Unpaid Invoices
+        [Authorize (Policy = "Admin")]
+        public async Task<IActionResult> GetUnpaidInvoices()
+        {
+            var unpaidInvoices = await _invoiceRepository.GetUnpaidInvoicesAsync();
+            return View("GetInvoiceSummary", unpaidInvoices);
+        }
     }
 }
