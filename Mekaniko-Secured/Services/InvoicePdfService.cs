@@ -167,13 +167,13 @@ namespace Mekaniko_Secured.Services
             table.AddColumn(Unit.FromCentimeter(13));
             table.AddColumn(Unit.FromCentimeter(4));
 
-            AddTableRow(table, "Subtotal:", invoice.SubTotal?.ToString("C") ?? "N/A");
             AddTableRow(table, "Labor Price:", invoice.LaborPrice?.ToString("C") ?? "N/A");
+            AddTableRow(table, "Subtotal:", invoice.SubTotal?.ToString("C") ?? "N/A");
             AddTableRow(table, "Discount:", invoice.Discount?.ToString("C") ?? "N/A");
             AddTableRow(table, "Shipping Fee:", invoice.ShippingFee?.ToString("C") ?? "N/A");
             AddTableRow(table, "Total Amount:", invoice.TotalAmount?.ToString("C") ?? "N/A");
             AddTableRow(table, "Amount Paid:", invoice.AmountPaid?.ToString("C") ?? "N/A");
-            AddTableRow(table, "Payment Status:", invoice.PaymentTerm);
+            AddTableRow(table, "Payment Term:", invoice.PaymentTerm);
 
             section.AddParagraph();
         }
