@@ -44,7 +44,9 @@
         @foreach (var invoice in Model)
         {
             <tr>
-                <td class="text-center">@invoice.InvoiceId</td>
+                <td class="text-center">
+                    <a href="#" class="view-invoice-details" data-invoice-id="@invoice.InvoiceId">@invoice.InvoiceId</a>
+                </td>
                 <td class="text-center">@invoice.IssueName</td>
                 <td class="text-center">@invoice.DateAdded?.ToString("MM/dd/yyyy")</td>
                 <td class="text-center">@invoice.DueDate?.ToString("MM/dd/yyyy")</td>
@@ -66,6 +68,11 @@
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="actionDropdown">
+                            <li>
+                                <button class="dropdown-item edit-invoice" data-invoice-id="@invoice.InvoiceId">
+                                    <i class="bi bi-pencil-square"></i> Edit Invoice
+                                </button>
+                            </li>
                             <li>
                                 <button class="dropdown-item mark-as-paid" data-invoice-id="@invoice.InvoiceId">
                                     <i class="bi bi-check-lg"></i> Mark as Paid
@@ -103,10 +110,144 @@
     </tbody>
 </table>
 
+<!-- Edit Invoice Modal -->
+<div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-labelledby="editInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editInvoiceModalLabel">Edit Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editInvoiceForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="EditInvoiceId" name="InvoiceId" />
 
+                    <div class="customer-car-details d-flex justify-content-between align-items-center container">
+                        <div class="left">
+                            <div class="group">
+                                <label for="EditCustomerName">Customer Name</label>
+                                <input type="text" id="EditCustomerName" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditCustomerEmail">Customer Email</label>
+                                <input type="text" id="EditCustomerEmail" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditCustomerNumber">Customer Number</label>
+                                <input type="text" id="EditCustomerNumber" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="group">
+                                <label for="EditCarRego">Car Rego</label>
+                                <input type="text" id="EditCarRego" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditCarModel">Car Model</label>
+                                <input type="text" id="EditCarModel" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditCarYear">Car Year</label>
+                                <input type="text" id="EditCarYear" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="invoice-item-container container mt-4">
+                        <h4 class="heading-title">ITEM LIST</h4>
+                        <div id="editInvoiceItems" class="invoice-items-container flex-column d-flex mt-2">
+                            <!-- Invoice items will be added here dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="invoice-details d-flex justify-content-between align-items-center container mt-5">
+                        <div class="left">
+                            <div class="group">
+                                <label for="EditDateAdded">Date Added</label>
+                                <input type="date" id="EditDateAdded" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditDueDate">Due Date</label>
+                                <input type="date" id="EditDueDate" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditIssueName">Issue Name</label>
+                                <input type="text" id="EditIssueName" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditPaymentTerm">Payment Term</label>
+                                <input type="text" id="EditPaymentTerm" class="form-control" readonly />
+                            </div>
+                            <div class="group">
+                                <label for="EditNotes">Notes</label>
+                                <textarea id="EditNotes" name="Notes" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="right d-flex justify-content-between align-items-center">
+                            <div class="right-left">
+                                <div class="group">
+                                    <label for="EditLaborPrice">Labor Price</label>
+                                    <input type="number" id="EditLaborPrice" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="EditDiscount">Discount</label>
+                                    <input type="number" id="EditDiscount" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="EditShippingFee">Shipping Fee</label>
+                                    <input type="number" id="EditShippingFee" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="EditSubTotal">Sub Total</label>
+                                    <input type="number" id="EditSubTotal" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="right-right ms-5">
+                                <div class="group">
+                                    <label for="EditTotalAmount">Total Amount</label>
+                                    <input type="number" id="EditTotalAmount" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="EditAmountPaid">Amount Paid</label>
+                                    <input type="number" id="EditAmountPaid" class="form-control" readonly />
+                                </div>
+                                <div class="group">
+                                    <label for="EditPaymentStatus">Payment Status</label>
+                                    <input type="text" id="EditPaymentStatus" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveEditInvoiceBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="invoiceDetailsModal" tabindex="-1" aria-labelledby="invoiceDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="invoiceDetailsModalLabel">Invoice Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Invoice details will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Store the CSRF token and URLs as data attributes on a global element -->
 <div id="scriptData"
+     data-get-invoice-details-url="@Url.Action("GetInvoiceDetails", "Invoice")"
+     data-update-invoice-notes-url="@Url.Action("UpdateInvoiceNotes", "Invoice")"
      data-add-invoice-url="@Url.Action("AddInvoiceToCar", "Invoice")"
      data-mark-as-paid-url="@Url.Action("MarkAsPaid", "Invoice")"
      data-view-pdf-url="@Url.Action("GeneratePdf", "Invoice")"
@@ -120,8 +261,5 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>
-
-    
-
     <script src="~/js/carInvoice.js"></script> <!-- External JS file -->
 }

@@ -283,6 +283,17 @@ namespace Mekaniko_Secured.Repository
                 }).ToListAsync();
         }
 
-     
+        public async Task<bool> UpdateInvoiceNotesAsync(int invoiceId, string notes)
+        {
+            var invoice = await _data.Invoices.FindAsync(invoiceId);
+            if (invoice == null)
+            {
+                return false;
+            }
+
+            invoice.Notes = notes;
+            await _data.SaveChangesAsync();
+            return true;
+        }
     }
 }

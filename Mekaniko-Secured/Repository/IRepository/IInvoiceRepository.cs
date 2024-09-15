@@ -18,6 +18,7 @@ namespace Mekaniko_Secured.Repository.IRepository
         Task<List<InvoiceListDto>> SearchInvoiceByRegoAsync(string rego);
         Task<List<InvoiceListDto>> FilterInvoicePaid(bool isPaid);
         Task<List<InvoiceListDto>> FilterByEmailStatus(bool? emailStatus);
+        Task<bool> UpdateInvoiceNotesAsync(int invoiceId, string notes);
        // Task<List<InvoiceListDto>> UnpaidInvoices(bool isPaid);
     }
 }

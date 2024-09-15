@@ -4,6 +4,15 @@
 .login-body {
     background-color: rgb(37, 36, 36);
 }
+
+textarea {
+    height: 200px;
+}
+.left{
+    width: 400px;
+}
+
+
 /************************ LOGIN PAGE *********************** */
 .login-section {
     position: relative;

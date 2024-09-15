@@ -264,5 +264,31 @@ namespace Mekaniko_Secured.Controllers
             var unpaidInvoices = await _invoiceRepository.GetUnpaidInvoicesAsync();
             return View("GetInvoiceSummary", unpaidInvoices);
         }
+
+        // POST : Update Invoice
+        [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateInvoiceNotes(int invoiceId, string notes)
+        {
+            try
+            {
+                var result = await _invoiceRepository.UpdateInvoiceNotesAsync(invoiceId, notes);
+                if (result)
+                {
+                    return Json(new { success = true, message = "Invoice notes updated successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invoice not found or update failed." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "Error occurred while updating invoice notes for invoice {InvoiceId}", invoiceId);
+                return Json(new { success = false, message = "An error occurred while updating the invoice notes." });
+            }
+        }
     }
 }
