@@ -15,13 +15,26 @@ $(document).ready(function () {
 
     // Add Invoice Item functionality
     $('#addItemButton').click(function () {
+        if ($('#invoiceItems').children().length === 0) {
+            $('#invoiceItems').prepend(`
+                <div class="row fw-bold mb-2">
+                    <div class="col-4">Item Name</div>
+                    <div class="col-2">Quantity</div>
+                    <div class="col-3">Price</div>
+                    <div class="col-3">Total</div>
+                </div>
+            `);
+        }
+
         var newItem = $(`
-            <div class="invoice-item d-flex justify-content-between align-items-center mb-2">
-                <input type="text" class="form-control me-2 item-name" placeholder="Item Name">
-                <input type="number" class="form-control me-2 item-quantity" placeholder="Quantity">
-                <input type="number" class="form-control me-2 item-price" placeholder="Price">
-                <input type="number" class="form-control item-total" placeholder="Total" readonly>
-                <button type="button" class="btn btn-danger ms-2 remove-item">Remove</button>
+            <div class="row invoice-item d-flex justify-content-between align-items-center mb-2">
+                <div class="col-4"><input type="text" class="form-control item-name" placeholder="Item Name"></div>
+                <div class="col-2"><input type="number" class="form-control item-quantity" placeholder="Quantity"></div>
+                <div class="col-3"><input type="number" class="form-control item-price" placeholder="Price"></div>
+                <div class="col-3 d-flex">
+                    <input type="number" class="form-control item-total me-2" placeholder="Total" readonly>
+                    <button type="button" class="btn btn-danger remove-item">Remove</button>
+                </div>
             </div>
         `);
         $('#invoiceItems').append(newItem);
@@ -31,6 +44,10 @@ $(document).ready(function () {
     $(document).on('click', '.remove-item', function () {
         $(this).closest('.invoice-item').remove();
         updateTotals();
+
+        if ($('#invoiceItems').children().length === 0) {
+            $('#invoiceItems').empty();
+        }
     });
 
     // Update item total and invoice totals when quantity or price changes
@@ -235,13 +252,25 @@ $(document).ready(function () {
         // Populate invoice items
         var itemsContainer = $('#editInvoiceItems');
         itemsContainer.empty();
+
+        if (invoice.invoiceItems.length > 0) {
+            itemsContainer.append(`
+                <div class="row fw-bold mb-2">
+                    <div class="col-4">Item Name</div>
+                    <div class="col-2">Quantity</div>
+                    <div class="col-3">Price</div>
+                    <div class="col-3">Total</div>
+                </div>
+            `);
+        }
+
         invoice.invoiceItems.forEach(function (item) {
             var newItem = $(`
-                <div class="invoice-item d-flex justify-content-between align-items-center mb-2">
-                    <input type="text" class="form-control me-2 item-name" value="${item.itemName}" readonly>
-                    <input type="number" class="form-control me-2 item-quantity" value="${item.quantity}" readonly>
-                    <input type="number" class="form-control me-2 item-price" value="${item.itemPrice?.toFixed(2) || '0.00'}" readonly>
-                    <input type="number" class="form-control item-total" value="${item.itemTotal?.toFixed(2) || '0.00'}" readonly>
+                <div class="row invoice-item d-flex justify-content-between align-items-center mb-2">
+                    <div class="col-4"><input type="text" class="form-control item-name" value="${item.itemName}" readonly></div>
+                    <div class="col-2"><input type="number" class="form-control item-quantity" value="${item.quantity}" readonly></div>
+                    <div class="col-3"><input type="number" class="form-control item-price" value="${item.itemPrice?.toFixed(2) || '0.00'}" readonly></div>
+                    <div class="col-3"><input type="number" class="form-control item-total" value="${item.itemTotal?.toFixed(2) || '0.00'}" readonly></div>
                 </div>
             `);
             itemsContainer.append(newItem);

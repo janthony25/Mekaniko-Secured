@@ -172,7 +172,7 @@ namespace Mekaniko_Secured.Controllers
         [Authorize(Policy = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsPaid(int invoiceId)
-         {
+          {
             Console.WriteLine($"MarkAsPaid called with invoiceId: {invoiceId}");
             try
             {
